@@ -10,7 +10,7 @@ try:
         connection = db.connect(host=HOST, port=PORT, user=USER,
                                   passwd=PASSWORD, db=DB)
         dbhandler = connection.cursor()
-        dbhandler.execute("show tables")
+        dbhandler.execute("describe test")
         result = dbhandler.fetchall()
         for item in result:
             print item

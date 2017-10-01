@@ -11,7 +11,7 @@
   <link rel="stylesheet" href="http://getbootstrap.com/examples/jumbotron-narrow/jumbotron-narrow.css" >
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-  
+
   <link href="{{ url_for('static',filename='css/header.css') }}" rel="stylesheet">
   <script src="../static/js/jquery-3.2.1.min.js"></script>
 
@@ -23,9 +23,9 @@
     <div class="header">
       <nav>
         <ul class="nav nav-pills pull-right">
-          <li role="presentation" ><a href="showHome">Home</a></li>
-          <li role="presentation"><a href="showSignIn">Sign In</a></li>
-          <li role="presentation" class="active"><a href="showSignUp">Sign Up</a></li>
+          <li role="presentation" ><a href="/">Home</a></li>
+          <li role="presentation"><a href="/signIn">Sign In</a></li>
+          <li role="presentation" class="active"><a href="/signUp">Sign Up</a></li>
         </ul>
       </nav>
       <h3 class="text-muted">News Aggregator App</h3>
@@ -33,7 +33,7 @@
 
     <div class="jumbotron">
       <h1>Read-it-Later</h1>
-      
+
       <div id="error_message" class="ajax_response"></div>
       <div id="success_message" class="ajax_response"></div>
       <form class="form-signin">
@@ -51,18 +51,18 @@
 
       <label for="inputPassword" class="sr-only">Password</label>
       <input type="password" name="inputPassword" id="inputPassword" class="form-control" placeholder="Password" required autofocus>
-      
+
       <label for="inputRePassword" class="sr-only">Re-enter Password</label>
       <input type="password" name="inputRePassword" id="inputRePassword" class="form-control" placeholder="Re-enter Password" required autofocus>
 
       <input  required type="submit" class="btn btn-lg btn-primary btn-block" name="submit" value="Sign Up" />
 
-      
+
       <!-- <button id="btnSignUp" class="btn btn-lg btn-primary btn-block" type="button">Sign up</button> -->
     </form>
     </div>
 
-     
+
 
     <footer class="footer">
       <p>&copy; read-it-later 2017</p>
@@ -77,7 +77,7 @@
 
 #error_message{
     background: #F3A6A6;
-    
+
 }
 #success_message{
     background: #aaf9a2;
@@ -116,7 +116,7 @@ $(function() {
               setTimeout(function() {
                   $('#success_message').fadeOut("slow");
                }, 3000 );
-              
+
               $('form.form-signin')[0].reset()
             }
             else{
@@ -124,7 +124,7 @@ $(function() {
 
               setTimeout(function() {
                   $('#error_message').fadeOut("slow");
-               }, 3000 ); 
+               }, 3000 );
 
             }
             },

@@ -85,17 +85,65 @@ def register():
         # Create cursor
         cur = mysql.connection.cursor()
 
+        # Execute query
         cur.execute("INSERT INTO user(first_name, last_name, username, password, email, roll_no) VALUES('%s','%s','%s','%s','%s','%s')"%(firstName, lastName, username, password, email, rollNo))
 
+        # Commit to Database
         mysql.connection.commit()
 
+        # Close connection
         cur.close()
 
         flash('You are now registered and can log in', 'success')
 
-        redirect('/')
+        return redirect(url_for('login'))
 
     return render_template('register.html', form=form)
+
+# User login
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        # Get form feilds
+        username = request.form['username']
+        password_candidate = request.form['password']
+
+        # Create a cursor
+        cur = mysql.connection.cursor()
+
+        result = cur.execute("SELECT * FROM user WHERE username = %s",[username])
+
+        if result > 0:
+             data = cur.fetchone()
+             password = data['password']
+
+             if sha256_crypt.verify(password_candidate, password):
+                 app.logger.info('PASSWORD MATCHED')
+                 session['logged_in'] = True
+                 session['username'] = username
+                 #session['firstName'] = result['first_name']
+                 #session['lastName'] = result['last_name']
+
+                 flash('You are now logged in', 'success')
+
+                 return redirect(url_for('dashboard'))
+             else:
+                 app.logger.info('PASSWORD NOT MATCHED')
+                 error = 'Incorrect password'
+                 return render_template('login.html', error=error)
+
+        else:
+            app.logger.info('INVALID USERNAME')
+            error = 'Enter a valid username'
+            return render_template('login.html', error=error)
+
+        cur.close()
+
+    return render_template('login.html')
+
+@app.route('/dashboard')
+def dashboard():
+    return render_template('dashboard.html')
 
 if __name__ =="__main__":
     app.secret_key = 'secret123'

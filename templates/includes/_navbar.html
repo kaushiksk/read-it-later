@@ -1,18 +1,20 @@
 <div class="header">
-    <nav>
+    <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
         <ul class="nav nav-pills pull-right">
           {% if session.logged_in %}
-          <li role="presentation"><a href="/logout">Logout</a>
+          <li role="presentation" class="active"><a href="/logout">Logout</a>
           </li>
           {% else %}
-          <li role="presentation" class="active"><a href="/">Home</a>
+          <li role="presentation"><a href="/">Home</a>
           </li>
           <li role="presentation"><a href="/login">Sign In</a>
           </li>
           <li role="presentation"><a href="/register">Sign Up</a>
           </li>
           {% endif %}
+
         </ul>
+        <h3 class="text-muted">News Aggregator App</h3>
     </nav>
-    <h3 class="text-muted">News Aggregator App</h3>
+    
 </div>

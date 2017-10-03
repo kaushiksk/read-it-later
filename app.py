@@ -3,7 +3,7 @@ import random
 import sys
 # from flaskext.mysql import MySQL
 from flask_mysqldb import MySQL
-frm forms import RegisterForm
+from forms import RegisterForm
 from passlib.hash import sha256_crypt
 
 app = Flask(__name__)
@@ -67,6 +67,7 @@ def register():
         firstName = form.firstName.data
         lastName = form.lastName.data
         rollNo = form.rollNo.data
+        dept = form.dept.data
         username = form.username.data
         email = form.email.data
         password = sha256_crypt.encrypt(str(form.password.data))
@@ -75,7 +76,7 @@ def register():
         cur = mysql.connection.cursor()
 
         # Execute query
-        cur.execute("INSERT INTO users(first_name, last_name, username, password, email, roll_no) VALUES('%s','%s','%s','%s','%s','%s')"%(firstName, lastName, username, password, email, rollNo))
+        cur.execute("INSERT INTO users(first_name, last_name, username, password, email, roll_no, d_id) VALUES('%s','%s','%s','%s','%s','%s', '%s')"%(firstName, lastName, username, password, email, rollNo, dept))
 
         # Commit to Database
         mysql.connection.commit()

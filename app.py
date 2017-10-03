@@ -3,7 +3,7 @@ import random
 import sys
 # from flaskext.mysql import MySQL
 from flask_mysqldb import MySQL
-from wtforms import Form, StringField, TextAreaField, PasswordField, validators
+frm forms import RegisterForm
 from passlib.hash import sha256_crypt
 
 app = Flask(__name__)
@@ -44,8 +44,8 @@ def signUp():
 
     try:
     #print "INSERT INTO user(first_name, last_name, username, password, email, roll_no) VALUES('%s','%s','%s','%s','%s','%s')"%(_firstName, _lastName, _username, _password, _email, str(random.randint(1,100)))
-	    dbhandler.execute("INSERT INTO user(first_name, last_name, username, password, email, roll_no) VALUES('%s','%s','%s','%s','%s','%s')"%(_firstName, _lastName, _username, _password, _email, str(random.randint(1,100))))
-	    dbhandler.execute("select * from user")
+	    dbhandler.execute("INSERT INTO users(first_name, last_name, username, password, email, roll_no) VALUES('%s','%s','%s','%s','%s','%s')"%(_firstName, _lastName, _username, _password, _email, str(random.randint(1,100))))
+	    dbhandler.execute("select * from users")
 	    result = dbhandler.fetchall()
 	    for item in result:
 	    	print item
@@ -59,17 +59,6 @@ def signUp():
 
     #return render_template('index.html')
 
-class RegisterForm(Form):
-        firstName = StringField('First Name', [validators.Length(min=1, max=50)])
-        lastName = StringField('Last Name', [validators.Length(min=1, max=50)])
-        rollNo = StringField('Roll Number', [validators.Length(7, message='Field must be 7 characters long')])
-        username = StringField('Username', [validators.Length(min=4, max=25)])
-        email = StringField('Email', [validators.Length(min=6, max=50)])
-        password = PasswordField('Password', [
-            validators.DataRequired(),
-            validators.EqualTo('confirm', message='Passwords do not match')
-            ])
-        confirm = PasswordField('Confirm Password')
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
@@ -86,7 +75,7 @@ def register():
         cur = mysql.connection.cursor()
 
         # Execute query
-        cur.execute("INSERT INTO user(first_name, last_name, username, password, email, roll_no) VALUES('%s','%s','%s','%s','%s','%s')"%(firstName, lastName, username, password, email, rollNo))
+        cur.execute("INSERT INTO users(first_name, last_name, username, password, email, roll_no) VALUES('%s','%s','%s','%s','%s','%s')"%(firstName, lastName, username, password, email, rollNo))
 
         # Commit to Database
         mysql.connection.commit()
@@ -111,7 +100,7 @@ def login():
         # Create a cursor
         cur = mysql.connection.cursor()
 
-        result = cur.execute("SELECT * FROM user WHERE username = %s",[username])
+        result = cur.execute("SELECT * FROM users WHERE username = %s",[username])
 
         if result > 0:
              data = cur.fetchone()

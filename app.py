@@ -34,21 +34,28 @@ def register():
         email = form.email.data
         password = sha256_crypt.encrypt(str(form.password.data))
 
-        # Create cursor
-        cur = mysql.connection.cursor()
 
-        # Execute query
-        cur.execute("INSERT INTO users(first_name, last_name, username, password, email, roll_no, d_id) VALUES('%s','%s','%s','%s','%s','%s', '%s')"%(firstName, lastName, username, password, email, rollNo, dept))
+        try:
+	        # Create cursor
+	        cur = mysql.connection.cursor()
 
-        # Commit to Database
-        mysql.connection.commit()
+	        # Execute query
+	        cur.execute("INSERT INTO users(first_name, last_name, username, password, email, roll_no, d_id) VALUES('%s','%s','%s','%s','%s','%s', '%s')"%(firstName, lastName, username, password, email, rollNo, dept))
 
-        # Close connection
-        cur.close()
+	        # Commit to Database
+	        mysql.connection.commit()
 
-        flash('You are now registered and can log in', 'success')
+	        # Close connection
+	        cur.close()
 
-        return redirect(url_for('login'))
+	        flash('You are now registered and can log in', 'success')
+
+	        return redirect(url_for('login'))
+
+        except:
+
+	    	flash(str(sys.exc_info()[0]), 'danger')
+	    	return render_template('register.html', form=form)
 
     return render_template('register.html', form=form)
 
@@ -95,7 +102,13 @@ def login():
 
 @app.route('/dashboard')
 def dashboard():
-    return render_template('dashboard.html')
+
+	if 'logged_in' in session:
+		return render_template('dashboard.html')
+	else:
+		flash('You need to be logged in to access!', 'danger')
+		return redirect(url_for('login'))
+
 
 @app.route('/logout')
 def logout():

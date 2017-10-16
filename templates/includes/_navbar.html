@@ -5,18 +5,14 @@
               <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-collapse-01">
                 <span class="sr-only">Toggle navigation</span>
               </button>
-              <a class="navbar-brand" href="#">News Aggregator App</a>
+              <a class="navbar-brand" href="#">News Aggregator App   </a>
             </div>
             <div class="collapse navbar-collapse" id="navbar-collapse-01">
-              {% if session.logged_in %}
-              <ul class="nav navbar-nav navbar-left">
-                <li><a href="/">Home</a></li>                
-                <li><a href="/dash">Dashboard</a></li>
-              </ul>
-              {% endif %}
               <ul class="nav navbar-nav navbar-right">
               {% if session.logged_in %}
                <li><a href="#">@{{session.username}}</a></li>
+               <li><a href="/dashboard">Home</a></li>                
+                <li><a href="/dash">Dashboard</a></li>
                <li><a href="/addnew">Add Bookmark</a></li>
                <li><a href="/logout">Logout</a></li>
               {% else %}

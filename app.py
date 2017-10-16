@@ -9,7 +9,7 @@ app = Flask(__name__)
 
 app.config['MYSQL_HOST'] = '138.197.183.138'
 app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = 'root'
+app.config['MYSQL_PASSWORD'] = 'dbmsproject'
 app.config['MYSQL_DB'] = 'project'
 app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
 
@@ -34,9 +34,6 @@ def register():
         email = form.email.data
         password = sha256_crypt.encrypt(str(form.password.data))
 
-        cur = mysql.connection.cursor()
-
-        
 
         try:
             # Create cursor
@@ -44,7 +41,7 @@ def register():
 
             # Execute query 
             cur.callproc('register', (firstName, lastName, username, password, email, rollNo, dept))
-
+            
 
             data = cur.fetchone()
 

@@ -1,20 +1,36 @@
-<div class="header">
-    <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
-        <ul class="nav nav-pills pull-right">
-          {% if session.logged_in %}
-          <li role="presentation" class="active"><a href="/logout">Logout</a>
-          </li>
-          {% else %}
-          <li role="presentation"><a href="/">Home</a>
-          </li>
-          <li role="presentation"><a href="/login">Sign In</a>
-          </li>
-          <li role="presentation"><a href="/register">Sign Up</a>
-          </li>
-          {% endif %}
+      <div class="row demo-row">
+        <div class="col-xs-12">
+          <nav class="navbar navbar-inverse navbar-embossed navbar-fixed" role="navigation">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-collapse-01">
+                <span class="sr-only">Toggle navigation</span>
+              </button>
+              <a class="navbar-brand" href="#">News Aggregator App</a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar-collapse-01">
+              {% if session.logged_in %}
+              <ul class="nav navbar-nav navbar-left">
+                <li><a href="/">Home</a></li>                
+                <li><a href="/dash">Dashboard</a></li>
+              </ul>
+              {% endif %}
+              <ul class="nav navbar-nav navbar-right">
+              {% if session.logged_in %}
+               <li><a href="#">@{{session.username}}</a></li>
+               <li><a href="/addnew">Add Bookmark</a></li>
+               <li><a href="/logout">Logout</a></li>
+              {% else %}
+                <li><a href="/">Home</a></li>                
+                <li><a href="/login">Sign In</a></li>
+                 <li><a href="/register">Sign Up</a></li>
+                 {% endif %}
+               </ul>
 
-        </ul>
-        <h3 class="text-muted">News Aggregator App</h3>
-    </nav>
-    
-</div>
+               
+            </div><!-- /.navbar-collapse -->
+          </nav><!-- /navbar -->
+        </div>
+      </div>
+
+
+

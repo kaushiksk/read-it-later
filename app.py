@@ -34,28 +34,42 @@ def register():
         email = form.email.data
         password = sha256_crypt.encrypt(str(form.password.data))
 
+        cur = mysql.connection.cursor()
+
+        
 
         try:
-	        # Create cursor
-	        cur = mysql.connection.cursor()
+            # Create cursor
+            cur = mysql.connection.cursor()
 
-	        # Execute query
-	        cur.execute("INSERT INTO users(first_name, last_name, username, password, email, roll_no, d_id) VALUES('%s','%s','%s','%s','%s','%s', '%s')"%(firstName, lastName, username, password, email, rollNo, dept))
+            # Execute query 
+            cur.callproc('register', (firstName, lastName, username, password, email, rollNo, dept))
 
-	        # Commit to Database
-	        mysql.connection.commit()
 
-	        # Close connection
-	        cur.close()
+            data = cur.fetchone()
 
-	        flash('You are now registered and can log in', 'success')
+            app.logger.info(data.keys()[0])
+            cur.close()
+            
 
-	        return redirect(url_for('login'))
+            mysql.connection.commit()
+
+            msg = data.keys()[0] 
+            # Close connection
+
+
+            if msg=='success':
+                flash('You are now registered and can log in', 'success')
+                return redirect(url_for('login'))
+
+            else:
+                error_msg = (" ").join(msg.split('_')[1:])
+                flash('The %s already exists'%error_msg, 'danger')
 
         except:
 
-	    	flash(str(sys.exc_info()[0]), 'danger')
-	    	return render_template('register.html', form=form)
+            flash(str(sys.exc_info()[0]), 'danger')
+            return render_template('register.html', form=form)
 
     return render_template('register.html', form=form)
 
@@ -103,11 +117,11 @@ def login():
 @app.route('/dashboard')
 def dashboard():
 
-	if 'logged_in' in session:
-		return render_template('dashboard.html')
-	else:
-		flash('You need to be logged in to access!', 'danger')
-		return redirect(url_for('login'))
+    if 'logged_in' in session:
+        return render_template('dashboard.html')
+    else:
+        flash('You need to be logged in to access!', 'danger')
+        return redirect(url_for('login'))
 
 
 @app.route('/logout')

@@ -4,15 +4,26 @@ A news aggregator and read-it-later web app built using flask and mysql
 ## TODO
 
 ### DB Side
- - [ ] MySQL procedure for validation of signup data
- - [ ] Clearly define all tables, normalize, foreign keys etc.
-
+ - [x] MySQL procedure for validation of signup data
+ - [ ] `BOOKMARK TABLE LEFT`Clearly define all tables, normalize, foreign keys etc.
+ - [ ] `IN PROGRESS`Procedure for entering new post/bookmark and performing all the checks
+ - [ ] Archive bookmark (Mark as read)
+ - [ ] Delete bookmark
+ 
 ### Backend 
- - [ ] Check type of error and display it to user. Currently I am just posting a "Invalid
+ - [x] `USED WTFORMs`Check type of error and display it to user. Currently I am just posting a "Invalid
    Field" message. If usernames clash, display that as error message to user.
-
+ - [x] Article parsing using newspaper
 
 ### Frontend
- - [ ] Remove those random text boxes in index page. Add Bootstrap tiles or some
+ - [x] Remove those random text boxes in index page. Add Bootstrap tiles or some
    boxes.
- - [ ] Add SignIn page
+ - [x] Add SignIn page
+ - [x] Revamp UI theme(FLAT-UI)
+ - [ ] `IN PROGRESS`Template for user and public dashboard
+ - [ ] Form for adding new bookmark
+ - [ ] Form for custom query in dashboard
+ - [ ] Additional features: archive, delete, like
+
+## Additional
+ - Tag Cloud. [JQCloud](http://primegap.net/2011/03/04/jqcloud-a-jquery-plugin-to-build-neat-word-clouds/),[help](https://stackoverflow.com/questions/37259740/passing-variables-from-flask-to-javascript)

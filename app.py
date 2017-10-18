@@ -2,8 +2,10 @@ from flask import Flask, render_template, flash, redirect, url_for, session, req
 import random
 import sys
 from flask_mysqldb import MySQL
-from forms import RegisterForm
 from passlib.hash import sha256_crypt
+
+from forms import RegisterForm, PostForm
+from posts import extract_article
 
 app = Flask(__name__)
 
@@ -119,6 +121,77 @@ def dashboard():
     else:
         flash('You need to be logged in to access!', 'danger')
         return redirect(url_for('login'))
+
+@app.route('/add_bookmark', methods=['GET', 'POST'])
+def add_bookmark():
+    form = PostForm(request.form)
+    if  request.method == 'POST' and form.validate():
+        url = form.url.data
+        cat = form.cat.data
+        
+        try: 
+            cur = mysql.connection.cursor()       
+  
+            cur.execute('SELECT p_id FROM bookmark WHERE username=\'{}\''.format(session['username']))
+            
+            data = cur.fetchall()
+            
+            cur.close()
+            
+            if len(data)>0:
+                flash('The article has already been bookmarked', 'success')
+            
+            else:
+        
+                cur = mysql.connection.cursor()       
+      
+                cur.execute('SELECT p_id FROM post WHERE url=\'{}\''.format(url))
+                
+                data = cur.fetchall()
+                
+                cur.close()
+                
+                if len(data)==0:  
+                    article = extract_article(url)
+                    
+                    cur = mysql.connection.cursor()                              
+                   
+                    cur.callproc('add_post', (url, article['title'], article['text'], article['img']))
+                    
+                    cur.close()
+                    
+                    mysql.connection.commit()
+                    
+                    
+                cur = mysql.connection.cursor()  
+
+                cur.execute('SELECT p_id FROM post WHERE url=\'{}\''.format(url))
+                
+                data = cur.fetchall()                 
+                
+                cur.callproc('add_bookmark', (session['username'], data[0]['p_id']))
+                
+                cur.close()        
+                
+                mysql.connection.commit()
+                
+                flash('The article has been successfully bookmarked', 'success')
+            
+            return render_template('dashboard.html')
+            
+        
+        except:
+
+            flash(str(sys.exc_info()[0]), 'danger')
+            return render_template('add_bookmark.html', form=form) 
+                  
+    return render_template('add_bookmark.html', form=form)        
+
+    
+	
+	
+    
+    
 
 
 @app.route('/logout')

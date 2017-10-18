@@ -15,3 +15,11 @@ class RegisterForm(Form):
             validators.EqualTo('confirm', message='Passwords do not match')
             ])
         confirm = PasswordField('Confirm Password')
+        
+
+categories = [('CO', 'Academia'), ('EN', 'Entertainment'), ('SP', 'Sports'), ('MU', 'Music'), ('AR', 'Art')]
+
+class PostForm(Form):
+        url = StringField('URL of the article', [validators.Length(min=1, max=200)])       
+        cat = SelectField('Category', choices=categories)
+        

@@ -1,0 +1,19 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+<div class="jumbotron">
+  <h1 style="text-align:center;">Add Bookmark</h1>
+  {% from "includes/_formhelpers.html" import render_field %}
+  <form method="POST" action="" class="form-signin">
+  
+      {{render_field(form.url, class_="form-control", placeholder="URL of the article")}}
+ 
+
+      {{render_field(form.cat, class_="form-control", placeholder="Category")}}
+
+
+
+    <p><input type="submit" class="btn btn-lg btn-primary btn-block" value="Submit"></p>
+    </div>
+    </form>
+{% endblock %}

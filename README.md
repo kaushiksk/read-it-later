@@ -5,9 +5,9 @@ A news aggregator and read-it-later web app built using flask and mysql
 
 ### DB Side
  - [x] MySQL procedure for validation of signup data
- - [ ] `BOOKMARK TABLE LEFT`Clearly define all tables, normalize, foreign keys etc.
- - [ ] `IN PROGRESS`Procedure for entering new post/bookmark and performing all the checks
- - [ ] Archive bookmark (Mark as read)
+ - [x] Clearly define all tables, normalize, foreign keys etc.
+ - [x] Procedure for entering new post/bookmark and performing all the checks
+ - [ ] `NEXT`Archive bookmark (Mark as read)
  - [ ] Delete bookmark
  
 ### Backend 
@@ -20,8 +20,8 @@ A news aggregator and read-it-later web app built using flask and mysql
    boxes.
  - [x] Add SignIn page
  - [x] Revamp UI theme(FLAT-UI)
- - [ ] `IN PROGRESS`Template for user and public dashboard
- - [ ] Form for adding new bookmark
+ - [x] Template for user and public dashboard
+ - [x] Form for adding new bookmark
  - [ ] Form for custom query in dashboard
  - [ ] Additional features: archive, delete, like
 

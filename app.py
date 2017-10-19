@@ -3,6 +3,7 @@ import random
 import sys
 from flask_mysqldb import MySQL
 from passlib.hash import sha256_crypt
+from pprint import pprint
 
 from forms import RegisterForm, PostForm
 from posts import extract_article
@@ -21,7 +22,10 @@ mysql = MySQL(app)
 
 @app.route('/')
 def home():
-        return render_template('index.html')
+    if 'logged_in' in session:
+        return redirect(url_for('dashboard'))
+    
+    return render_template('index.html')
 
 # User signup
 @app.route('/register', methods=['GET', 'POST'])
@@ -113,11 +117,25 @@ def login():
 
     return render_template('login.html')
 
-@app.route('/dashboard')
+@app.route('/dashboard', methods=['GET', 'POST'])
 def dashboard():
-
     if 'logged_in' in session:
-        return render_template('dashboard.html')
+        cur = mysql.connection.cursor()
+        cur.execute("SELECT title, url, description, thumb, P.p_id, b_id, category, read_status+0, time_added FROM bookmark B join post P on B.p_id=P.p_id where username=\'{}\' ORDER BY time_added DESC;".format(session["username"]))
+        data = cur.fetchall()
+        cur.close()
+        categories = list(set([entry["category"] for entry in data]))
+        
+        if request.method == 'POST':
+            cat = request.form['submit']
+            cur = mysql.connection.cursor()
+            cur.execute("SELECT title, url, description, thumb, P.p_id, b_id, category, read_status+0, time_added FROM bookmark B join post P on B.p_id=P.p_id where username=\'{}\' AND category=\'{}\' ORDER BY time_added DESC;".format(session["username"], cat))
+            data = cur.fetchall()
+            cur.close()
+            return render_template('dashboard.html', articles=data, categories=categories, cat=cat)
+        elif request.method =='GET':
+            pprint(data[0])
+            return render_template('dashboard.html', articles=data, categories=categories)
     else:
         flash('You need to be logged in to access!', 'danger')
         return redirect(url_for('login'))
@@ -130,54 +148,46 @@ def add_bookmark():
         cat = form.cat.data
         
         try: 
-            cur = mysql.connection.cursor()       
-  
+            cur = mysql.connection.cursor()
             cur.execute('SELECT p_id FROM bookmark WHERE username=\'{}\' AND p_id=(SELECT p_id FROM post WHERE url=\'{}\')'.format(session['username'], url))
             
-            data = cur.fetchall()
-            
-            cur.close()
+            data = cur.fetchall()            
+            #cur.close()
             
             if len(data)>0:
-                flash('The article has already been bookmarked', 'success')
+                flash('The article has already been bookmarked', 'danger')
+                return render_template('add_bookmark.html', form=form) 
             
             else:
         
-                cur = mysql.connection.cursor()       
-      
-                cur.execute('SELECT p_id FROM post WHERE url=\'{}\''.format(url))
-                
-                data = cur.fetchall()
-                
-                cur.close()
+                #cur = mysql.connection.cursor()      
+                cur.execute('SELECT p_id FROM post WHERE url=\'{}\''.format(url))                
+                data = cur.fetchall()                
+               # cur.close()
                 
                 if len(data)==0:  
                     article = extract_article(url)
-                    
-                    cur = mysql.connection.cursor()                              
-                   
-                    cur.callproc('add_post', (url, article['title'], article['text'], article['img']))
-                    
-                    cur.close()
-                    
-                    mysql.connection.commit()
-                    
-                    
-                cur = mysql.connection.cursor()  
 
-                cur.execute('SELECT p_id FROM post WHERE url=\'{}\''.format(url))
-                
-                data = cur.fetchall()                 
-                
-                cur.callproc('add_bookmark', (session['username'], data[0]['p_id']))
-                
-                cur.close()        
-                
+                    if article == "Error":
+                            flash('The url does not point to a valid article.', 'danger')
+                            cur.close()
+                            return render_template('add_bookmark.html', form=form)              
+                    #cur = mysql.connection.cursor()                   
+                    cur.callproc('add_post', (url, article['title'], article['text'], article['img']))
+                    #cur.close()                    
+                    #mysql.connection.commit()
+                    
+                    
+                # cur = mysql.connection.cursor()
+                cur.execute('SELECT p_id FROM post WHERE url=\'{}\''.format(url))                
+                data = cur.fetchall()                
+                cur.callproc('add_bookmark', (session['username'], data[0]['p_id'], cat))                
+                cur.close()
                 mysql.connection.commit()
                 
                 flash('The article has been successfully bookmarked', 'success')
             
-            return render_template('dashboard.html')
+            return redirect(url_for('dashboard'))
             
         
         except:

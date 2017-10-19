@@ -132,7 +132,7 @@ def add_bookmark():
         try: 
             cur = mysql.connection.cursor()       
   
-            cur.execute('SELECT p_id FROM bookmark WHERE username=\'{}\''.format(session['username']))
+            cur.execute('SELECT p_id FROM bookmark WHERE username=\'{}\' AND p_id=(SELECT p_id FROM post WHERE url=\'{}\')'.format(session['username'], url))
             
             data = cur.fetchall()
             

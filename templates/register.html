@@ -2,27 +2,27 @@
 
 {% block body %}
 <div class="jumbotron">
-  <h1 style="text-align:center;">Register</h1>
+  <h1 style="text-align:center;" class="animated fadeInUp">Register</h1>
   {% from "includes/_formhelpers.html" import render_field %}
   <form method="POST" action="" class="form-signin">
   
-      {{render_field(form.firstName, class_="form-control", placeholder="First Name")}}
+      {{render_field(form.firstName, class_="form-control animated fadeInUp", placeholder="First Name")}}
  
 
-      {{render_field(form.lastName, class_="form-control", placeholder="Last Name")}}
+      {{render_field(form.lastName, class_="form-control animated fadeInUp", placeholder="Last Name")}}
 
 
-      {{render_field(form.rollNo, class_="form-control", placeholder="Roll No.")}}
+      {{render_field(form.rollNo, class_="form-control animated fadeInUp", placeholder="Roll No.")}}
 
-      {{render_field(form.dept, class_="form-control", placeholder="Department")}}
+      {{render_field(form.dept, class_="form-control animated fadeInUp", placeholder="Department")}}
 
-      {{render_field(form.username, class_="form-control", placeholder="Username")}}
+      {{render_field(form.username, class_="form-control animated fadeInUp", placeholder="Username")}}
 
-      {{render_field(form.email, class_="form-control", placeholder="Email")}}
+      {{render_field(form.email, class_="form-control animated fadeInUp", placeholder="Email")}}
 
-      {{render_field(form.password, class_="form-control", placeholder="Enter your password")}}
+      {{render_field(form.password, class_="form-control animated fadeInUp", placeholder="Enter your password")}}
 
-      {{render_field(form.confirm, class_="form-control", placeholder="Confirm password")}}
+      {{render_field(form.confirm, class_="form-control animated fadeInUp", placeholder="Confirm password")}}
 
     <p><input type="submit" class="btn btn-lg btn-primary btn-block" value="Submit"></p>
     </div>

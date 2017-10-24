@@ -2,9 +2,9 @@
 
 {% block body %}
 <div class="jumbotron">
-  <h1 style="text-align:center;">Add Bookmark</h1>
+  <h1 style="text-align:center;" class="animated fadeInUp">Add Bookmark</h1>
   {% from "includes/_formhelpers.html" import render_field %}
-  <form method="POST" action="" class="form-signin">
+  <form method="POST" action="" class="form-signin" class="animated fadeInUp">
   
       {{render_field(form.url, class_="form-control", placeholder="URL of the article")}}
  

@@ -7,6 +7,7 @@ from pprint import pprint
 
 from forms import RegisterForm, PostForm
 from posts import extract_article
+from utils import parseme
 
 app = Flask(__name__)
 
@@ -126,7 +127,7 @@ def dashboard():
         cur.close()
         for entry in data:
 		#entry["title"] = entry["title"][:45] + " ..."
-		entry["description"] = entry["description"][:100] + " ..."
+		    entry["description"] = parseme(entry["description"],150)
         
         categories = list(set([entry["category"] for entry in data]))
         

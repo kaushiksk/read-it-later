@@ -50,17 +50,19 @@
 {% endif %}
 
   {% for article in articles %}
-  <div class="row">
-            <div class="col-md-7">
+  <div class="row animated fadeInUp">
+            <div class="col-md-5">
                 <a href="#">
                     <img class="img-responsive" src="{{article.thumb}}" alt="">
                 </a>
             </div>
-            <div class="col-md-5">
-                <h3 style="margin-top:0;">{{ article.title }}</h3>
-                <p>{{ article.description.decode("utf-8") }}</p>
+            <div class="col-md-7">
+                <h3 class="animated fadeInUp" style="margin-top:0;">{{ article.title }}</h3>
+                <p class="animated fadeInUp">{{ article.description.decode("utf-8") }}</p>
                 <a class="btn btn-primary" href="{{ article.url }}" target="_blank">Read Full Article <span class="glyphicon glyphicon-chevron-right"></span></a>
-                <button class="btn btn-danger fui-trash" value="" title="Delete">
+                <button class="btn btn-danger fui-trash delete" value="" title="Delete">
+                <button style="margin-left:1%;" id="{{ article.b_id }}" class="btn btn-warning fui-export archive" value="" title="Archive">
+                
             </div>
         </div>
         <hr><hr>
@@ -70,5 +72,30 @@
 
 </div>
 </div>
+
+{% endblock %}
+
+{% block script %}
+<script type="text/javascript">
+	$(".archive").click(function(){
+	$.confirm({
+    title: 'Want to archive?',
+    content: 'This post will be pushed to the Archives section',
+    buttons: {
+        confirm: {
+        btnClass: 'btn-blue',
+        action: function () {
+             $.alert('Confirmed!');
+        }
+    },
+        cancel: function () {
+            $.alert('Canceled!');
+        }
+    }
+});
+		
+	});
+
+</script>
 
 {% endblock %}

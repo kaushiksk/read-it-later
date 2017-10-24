@@ -15,7 +15,7 @@ def extract_article(story_url):
     title = article.title
     img = article.top_image
     publish_date = article.publish_date
-    text = article.text.split('\n\n')[0] + article.text.split('\n\n')[1] if article.text else ""
+    text = article.text.split('\n\n')[1] + " " +  article.text.split('\n\n')[2] if article.text else ""
 
 	# for keyword in article.keywords:
 	# 	keyword_freq[keyword] = keyword_freq.get(keyword,0) + 1

@@ -49,21 +49,23 @@
 <h2> {{ cat }} </h2>
 {% endif %}
 
- {% for article in articles %}
-            <div class="row">
+  {% for article in articles %}
+  <div class="row">
             <div class="col-md-7">
                 <a href="#">
-                    <img class="img-responsive" src="{{ article.thumb }}" alt="">
+                    <img class="img-responsive" src="{{article.thumb}}" alt="">
                 </a>
             </div>
             <div class="col-md-5">
-                <h3>{{ article.title }}</h3>
+                <h3 style="margin-top:0;">{{ article.title }}</h3>
                 <p>{{ article.description.decode("utf-8") }}</p>
                 <a class="btn btn-primary" href="{{ article.url }}" target="_blank">Read Full Article <span class="glyphicon glyphicon-chevron-right"></span></a>
+                <button class="btn btn-danger fui-trash" value="" title="Delete">
             </div>
         </div>
         <hr><hr>
-        {% endfor %}
+ 
+    {% endfor %}
 
 
 </div>

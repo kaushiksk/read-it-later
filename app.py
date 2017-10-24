@@ -122,16 +122,21 @@ def dashboard():
     if 'logged_in' in session:
         cur = mysql.connection.cursor()
         cur.execute("SELECT title, url, description, thumb, P.p_id, b_id, category, read_status+0, time_added FROM bookmark B join post P on B.p_id=P.p_id where username=\'{}\' ORDER BY time_added DESC;".format(session["username"]))
-        data = cur.fetchall()
+        data = list(cur.fetchall())
         cur.close()
+        for entry in data:
+		#entry["title"] = entry["title"][:45] + " ..."
+		entry["description"] = entry["description"][:100] + " ..."
+        
         categories = list(set([entry["category"] for entry in data]))
         
         if request.method == 'POST':
             cat = request.form['submit']
-            cur = mysql.connection.cursor()
-            cur.execute("SELECT title, url, description, thumb, P.p_id, b_id, category, read_status+0, time_added FROM bookmark B join post P on B.p_id=P.p_id where username=\'{}\' AND category=\'{}\' ORDER BY time_added DESC;".format(session["username"], cat))
-            data = cur.fetchall()
-            cur.close()
+            #cur = mysql.connection.cursor()
+            #cur.execute("SELECT title, url, description, thumb, P.p_id, b_id, category, read_status+0, time_added FROM bookmark B join post P on B.p_id=P.p_id where username=\'{}\' AND category=\'{}\' ORDER BY time_added DESC;".format(session["username"], cat))
+           # data = cur.fetchall()
+           # cur.close()
+            data = [item for item in data if item["category"]==cat]
             return render_template('dashboard.html', articles=data, categories=categories, cat=cat)
         elif request.method =='GET':
             pprint(data[0])

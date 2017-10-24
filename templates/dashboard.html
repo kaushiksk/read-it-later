@@ -30,7 +30,7 @@
                       <a data-toggle="collapse" data-parent="#accordion" href="#collapseThree">Categories</a>
                   </h4>
               </div>
-              <div id="collapseThree" class="panel-collapse collapse">
+              <div id="collapseThree" class="panel-collapse collapse {% if cat %}in{% endif %}">
                 <div class="panel-body">
                 <form action="" method="post">
                 {% for category in categories %}
@@ -85,7 +85,14 @@
         confirm: {
         btnClass: 'btn-blue',
         action: function () {
-             $.alert('Confirmed!');
+        	var posting = $.post( "url", { b_id: this.id } );
+        	posting.done(function( data ){
+        	$(this).removeClass('btn-warning');
+        	$(this).addClass('btn-default');
+        	$(this).attr("title", "Unarchive");
+        	$.alert('Confirmed!');	
+        	}
+            
         }
     },
         cancel: function () {

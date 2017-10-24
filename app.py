@@ -132,6 +132,7 @@ def dashboard():
         categories = list(set([entry["category"] for entry in data]))
         
         if request.method == 'POST':
+            print request
             cat = request.form['submit']
             #cur = mysql.connection.cursor()
             #cur.execute("SELECT title, url, description, thumb, P.p_id, b_id, category, read_status+0, time_added FROM bookmark B join post P on B.p_id=P.p_id where username=\'{}\' AND category=\'{}\' ORDER BY time_added DESC;".format(session["username"], cat))
@@ -203,9 +204,9 @@ def add_bookmark():
                   
     return render_template('add_bookmark.html', form=form)        
 
-    
-	
-	
+@app.route('/archive-toggle', methods=['POST'])	
+def archivetoggle():
+    return "Pass"
     
     
 

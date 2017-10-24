@@ -10,26 +10,22 @@
        
   <div class="panel-group" id="accordion">
           <div class="panel panel-default">
-              <div class="panel-heading">
-                  <h4 class="panel-title">
-                      <a data-toggle="collapse" data-parent="#accordion" href="#">Unread</a>
-                  </h4>
-
-          </div>
+              
+                      <a class="btn btn-block btn-index btn-md btn-primary" href="/dashboard"><strong>Unread</strong></a>
+                 
           <div class="panel panel-default">
-              <div class="panel-heading">
-                  <h4 class="panel-title">
-                      <a data-toggle="collapse" data-parent="#accordion" href="#">Archive</a>
-                  </h4>
-              </div>
+              
+                  <form action="" method="post">
+                      <input style="font-weight: bold;" class="btn btn-block btn-index btn-md btn-primary" type="submit" name="archive" value="Archive">
+               
               
           </div>
           <div class="panel panel-default">
-              <div class="panel-heading">
-                  <h4 class="panel-title">
-                      <a data-toggle="collapse" data-parent="#accordion" href="#collapseThree">Categories</a>
-                  </h4>
-              </div>
+              
+                 
+                      <a class="btn btn-block btn-index btn-md btn-primary" data-toggle="collapse" data-parent="#accordion" href="#collapseThree"><strong>Categories</strong></a>
+                 
+            
               <div id="collapseThree" class="panel-collapse collapse {% if cat %}in{% endif %}">
                 <div class="panel-body">
                 <form action="" method="post">
@@ -61,7 +57,11 @@
                 <p class="animated fadeInUp">{{ article.description.decode("utf-8") }}</p>
                 <a class="btn btn-primary" href="{{ article.url }}" target="_blank">Read Full Article <span class="glyphicon glyphicon-chevron-right"></span></a>
                 <button class="btn btn-danger fui-trash delete" value="" title="Delete">
-                <button style="margin-left:1%;" id="{{ article.b_id }}" class="btn btn-warning fui-export archive" value="" title="Archive">
+                {% if archive %}
+                <button style="margin-left:1%;" class="btn btn-default fui-export archive" id="{{ article.b_id }}" title="Unarchive">
+                {% else %}
+                <button style="margin-left:1%;" class="btn btn-warning fui-export archive" id="{{ article.b_id }}" title="Archive">
+                {% endif %}
                 
             </div>
         </div>
@@ -78,20 +78,47 @@
 {% block script %}
 <script type="text/javascript">
 	$(".archive").click(function(){
+	var id = this.id;
+	var mytitle, mycontent;
+	if ($("#"+id).attr("title") == "Archive"){
+		mytitle = 'Want to archive?';
+		mycontent = 'This post will be pushed to the Archives section';
+	}
+	else{
+		mytitle = 'Want to unarchive?';
+		mycontent = 'This post will be pushed to the Unread section';
+	}
 	$.confirm({
-    title: 'Want to archive?',
-    content: 'This post will be pushed to the Archives section',
+    title: mytitle,
+    content: mycontent,
     buttons: {
         confirm: {
         btnClass: 'btn-blue',
         action: function () {
-        	var posting = $.post( "url", { b_id: this.id } );
-        	posting.done(function( data ){
-        	$(this).removeClass('btn-warning');
-        	$(this).addClass('btn-default');
-        	$(this).attr("title", "Unarchive");
-        	$.alert('Confirmed!');	
-        	}
+        	$.ajax({
+			  type: "POST",
+			  contentType: "application/json; charset=utf-8",
+			  url: "/archive-toggle",
+			  data: JSON.stringify({ "b_id" : id }),
+			  success: function (stuff) {
+			    if ($("#"+id).attr("title") == "Archive"){
+	        		$("#"+id).removeClass('btn-warning');
+		        	$("#"+id).addClass('btn-default');
+		        	$("#"+id).attr("title", "Unarchive");
+		        	$.alert('Bookmark Archived!');
+		        }
+		        else{
+		        	$("#"+id).removeClass('btn-default');
+		        	$("#"+id).addClass('btn-warning');
+		        	$("#"+id).attr("title", "Archive");
+		        	$.alert('Bookmark Unarchived!');
+		        }
+
+			  },
+			  dataType: "json"
+			});
+        	
+     
             
         }
     },

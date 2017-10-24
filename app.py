@@ -1,6 +1,7 @@
-from flask import Flask, render_template, flash, redirect, url_for, session, request, logging
+from flask import Flask, render_template, flash, redirect, url_for, session, request, logging, jsonify
 import random
 import sys
+import json
 from flask_mysqldb import MySQL
 from passlib.hash import sha256_crypt
 from pprint import pprint
@@ -122,7 +123,7 @@ def login():
 def dashboard():
     if 'logged_in' in session:
         cur = mysql.connection.cursor()
-        cur.execute("SELECT title, url, description, thumb, P.p_id, b_id, category, read_status+0, time_added FROM bookmark B join post P on B.p_id=P.p_id where username=\'{}\' ORDER BY time_added DESC;".format(session["username"]))
+        cur.execute("SELECT title, url, description, thumb, P.p_id, b_id, category, read_status+0 as read_status, time_added FROM bookmark B join post P on B.p_id=P.p_id where username=\'{}\' ORDER BY time_added DESC;".format(session["username"]))
         data = list(cur.fetchall())
         cur.close()
         for entry in data:
@@ -132,7 +133,10 @@ def dashboard():
         categories = list(set([entry["category"] for entry in data]))
         
         if request.method == 'POST':
-            print request
+            if request.form['archive'] is not None:
+                data = [item for item in data if item["read_status"]==1]
+                return render_template('dashboard.html', articles=data, categories=categories, archive=True)
+
             cat = request.form['submit']
             #cur = mysql.connection.cursor()
             #cur.execute("SELECT title, url, description, thumb, P.p_id, b_id, category, read_status+0, time_added FROM bookmark B join post P on B.p_id=P.p_id where username=\'{}\' AND category=\'{}\' ORDER BY time_added DESC;".format(session["username"], cat))
@@ -141,6 +145,7 @@ def dashboard():
             data = [item for item in data if item["category"]==cat]
             return render_template('dashboard.html', articles=data, categories=categories, cat=cat)
         elif request.method =='GET':
+            data = [item for item in data if item["read_status"]==0]
             pprint(data[0])
             return render_template('dashboard.html', articles=data, categories=categories)
     else:
@@ -205,9 +210,14 @@ def add_bookmark():
     return render_template('add_bookmark.html', form=form)        
 
 @app.route('/archive-toggle', methods=['POST'])	
-def archivetoggle():
-    return "Pass"
-    
+def archive():
+    b_id = request.json["b_id"]
+    cur = mysql.connection.cursor()
+    cur.execute("UPDATE bookmark SET read_status = !read_status WHERE b_id=%s"%b_id)
+    cur.close()
+    mysql.connection.commit()
+    #print json.loads(request.form["b_id"])
+    return jsonify({"data":"pass"})  
     
 
 

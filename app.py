@@ -48,7 +48,8 @@ def register():
             cur = mysql.connection.cursor()
 
             # Execute query 
-            cur.callproc('register', (firstName, lastName, username, password, email, rollNo, dept))
+            cur.callproc('register', (firstName, lastName, \
+                            username, password, email, rollNo, dept))
             
 
             data = cur.fetchone()
@@ -89,7 +90,8 @@ def login():
         # Create a cursor
         cur = mysql.connection.cursor()
 
-        result = cur.execute("SELECT * FROM users WHERE username = %s",[username])
+        result = cur.execute("""SELECT * FROM users 
+                                WHERE username = %s""",[username])
 
         if result > 0:
              data = cur.fetchone()
@@ -123,7 +125,21 @@ def login():
 def dashboard():
     if 'logged_in' in session:
         cur = mysql.connection.cursor()
-        cur.execute("SELECT title, url, description, thumb, P.p_id, b_id, category, read_status+0 as read_status, time_added FROM bookmark B join post P on B.p_id=P.p_id where username=\'{}\' ORDER BY time_added DESC;".format(session["username"]))
+        cur.execute("""SELECT
+                        title,
+                        url, 
+                        description,
+                        thumb,
+                        P.p_id,
+                        b_id, 
+                        category, 
+                        read_status+0 as read_status, 
+                        time_added 
+                        FROM bookmark B JOIN post P 
+                        ON B.p_id=P.p_id 
+                        WHERE username=\'{}\'
+                        ORDER BY time_added DESC;""".format(session["username"]))
+
         data = list(cur.fetchall())
         cur.close()
         for entry in data:
@@ -133,21 +149,21 @@ def dashboard():
         categories = list(set([entry["category"] for entry in data]))
         
         if request.method == 'POST':
-            if request.form['archive'] is not None:
+            print request.form
+            if 'archive' in request.form:
                 data = [item for item in data if item["read_status"]==1]
-                return render_template('dashboard.html', articles=data, categories=categories, archive=True)
-
-            cat = request.form['submit']
-            #cur = mysql.connection.cursor()
-            #cur.execute("SELECT title, url, description, thumb, P.p_id, b_id, category, read_status+0, time_added FROM bookmark B join post P on B.p_id=P.p_id where username=\'{}\' AND category=\'{}\' ORDER BY time_added DESC;".format(session["username"], cat))
-           # data = cur.fetchall()
-           # cur.close()
-            data = [item for item in data if item["category"]==cat]
-            return render_template('dashboard.html', articles=data, categories=categories, cat=cat)
+                return render_template('dashboard.html', articles=data,\
+                                        categories=categories, archive=True)
+            else:
+                cat = request.form['submit']
+                data = [item for item in data if item["category"]==cat]
+                return render_template('dashboard.html', articles=data,\
+                                        categories=categories, cat=cat)
         elif request.method =='GET':
             data = [item for item in data if item["read_status"]==0]
             pprint(data[0])
-            return render_template('dashboard.html', articles=data, categories=categories)
+            return render_template('dashboard.html', articles=data,\
+                                    categories=categories)
     else:
         flash('You need to be logged in to access!', 'danger')
         return redirect(url_for('login'))
@@ -161,7 +177,15 @@ def add_bookmark():
         
         try: 
             cur = mysql.connection.cursor()
-            cur.execute('SELECT p_id FROM bookmark WHERE username=\'{}\' AND p_id=(SELECT p_id FROM post WHERE url=\'{}\')'.format(session['username'], url))
+            cur.execute("""SELECT 
+                            p_id 
+                            FROM bookmark 
+                            WHERE username=\'{}\' 
+                            AND 
+                            p_id=(SELECT 
+                                    p_id 
+                                    FROM post 
+                                    WHERE url=\'{}\')""".format(session['username'], url))
             
             data = cur.fetchall()            
             #cur.close()
@@ -173,7 +197,10 @@ def add_bookmark():
             else:
         
                 #cur = mysql.connection.cursor()      
-                cur.execute('SELECT p_id FROM post WHERE url=\'{}\''.format(url))                
+                cur.execute("""SELECT 
+                                p_id 
+                                FROM post 
+                                WHERE url=\'{}\'""".format(url))                
                 data = cur.fetchall()                
                # cur.close()
                 
@@ -181,19 +208,24 @@ def add_bookmark():
                     article = extract_article(url)
 
                     if article == "Error":
-                            flash('The url does not point to a valid article.', 'danger')
-                            cur.close()
-                            return render_template('add_bookmark.html', form=form)              
+                        flash('The url does not point to a valid article.', 'danger')
+                        cur.close()
+                        return render_template('add_bookmark.html', form=form)              
                     #cur = mysql.connection.cursor()                   
-                    cur.callproc('add_post', (url, article['title'], article['text'], article['img']))
+                    cur.callproc('add_post', (url, article['title'], \
+                                    article['text'], article['img']))
                     #cur.close()                    
                     #mysql.connection.commit()
                     
                     
                 # cur = mysql.connection.cursor()
-                cur.execute('SELECT p_id FROM post WHERE url=\'{}\''.format(url))                
+                cur.execute("""SELECT 
+                                p_id 
+                                FROM post 
+                                WHERE url=\'{}\'""".format(url))                
                 data = cur.fetchall()                
-                cur.callproc('add_bookmark', (session['username'], data[0]['p_id'], cat))                
+                cur.callproc('add_bookmark', (session['username'], \
+                                data[0]['p_id'], cat))                
                 cur.close()
                 mysql.connection.commit()
                 
@@ -213,7 +245,10 @@ def add_bookmark():
 def archive():
     b_id = request.json["b_id"]
     cur = mysql.connection.cursor()
-    cur.execute("UPDATE bookmark SET read_status = !read_status WHERE b_id=%s"%b_id)
+    cur.execute("""UPDATE 
+                    bookmark 
+                    SET read_status = !read_status 
+                    WHERE b_id=%s"""%b_id)
     cur.close()
     mysql.connection.commit()
     #print json.loads(request.form["b_id"])

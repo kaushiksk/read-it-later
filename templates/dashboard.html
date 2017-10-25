@@ -30,7 +30,24 @@
                 <div class="panel-body">
                 <form action="" method="post">
                 {% for category in categories %}
-                <input type="submit" name="submit" class="btn btn-block btn-index btn-md btn-inverse" value="{{ category }}">
+                <input type="submit" name="category" class="btn btn-block btn-index btn-md btn-inverse" value="{{ category }}">
+                {% endfor %}
+                </form>
+                  </div>
+              </div>
+          </div>
+
+          <div class="panel panel-default">
+              
+                 
+                      <a class="btn btn-block btn-index btn-md btn-primary" data-toggle="collapse" data-parent="#accordion" href="#collapseFour"><strong>Months</strong></a>
+                 
+            
+              <div id="collapseFour" class="panel-collapse collapse {% if month %}in{% endif %}">
+                <div class="panel-body">
+                <form action="" method="post">
+                {% for month in months %}
+                <input type="submit" name="month" class="btn btn-block btn-index btn-md btn-inverse" value="{{ month }}">
                 {% endfor %}
                 </form>
                   </div>
@@ -43,8 +60,9 @@
 <div class="col-sm-10" style="overflow-y:scroll; height:100vh;">
 {% if cat %}
 <h2> {{ cat }} </h2>
+{% elif month %}
+<h2> {{ month }} </h2>
 {% endif %}
-
   {% for article in articles %}
   <div class="row animated fadeInUp">
             <div class="col-md-5">
@@ -57,7 +75,7 @@
                 <p class="animated fadeInUp">{{ article.description.decode("utf-8") }}</p>
                 <a class="btn btn-primary" href="{{ article.url }}" target="_blank">Read Full Article <span class="glyphicon glyphicon-chevron-right"></span></a>
                 <button class="btn btn-danger fui-trash delete" value="" title="Delete">
-                {% if archive %}
+                {% if article.read_status %}
                 <button style="margin-left:1%;" class="btn btn-default fui-export archive" id="{{ article.b_id }}" title="Unarchive">
                 {% else %}
                 <button style="margin-left:1%;" class="btn btn-warning fui-export archive" id="{{ article.b_id }}" title="Archive">

@@ -147,23 +147,28 @@ def dashboard():
 		    entry["description"] = parseme(entry["description"],150)
         
         categories = list(set([entry["category"] for entry in data]))
-        
+        months = list(set([entry["time_added"].strftime("%B") for entry in data]))
         if request.method == 'POST':
             print request.form
             if 'archive' in request.form:
                 data = [item for item in data if item["read_status"]==1]
                 return render_template('dashboard.html', articles=data,\
-                                        categories=categories, archive=True)
-            else:
-                cat = request.form['submit']
+                                        categories=categories, months=months, archive=True)
+            elif 'category' in request.form:
+                cat = request.form['category']
                 data = [item for item in data if item["category"]==cat]
                 return render_template('dashboard.html', articles=data,\
-                                        categories=categories, cat=cat)
+                                        categories=categories, months=months, cat=cat)
+            elif 'month' in request.form:
+                month = request.form['month']
+                data = [item for item in data if entry["time_added"].strftime("%B")==month]
+                return render_template('dashboard.html', articles=data,\
+                                        categories=categories, months=months, month=month)
         elif request.method =='GET':
             data = [item for item in data if item["read_status"]==0]
             pprint(data[0])
             return render_template('dashboard.html', articles=data,\
-                                    categories=categories)
+                                    categories=categories, months=months,)
     else:
         flash('You need to be logged in to access!', 'danger')
         return redirect(url_for('login'))

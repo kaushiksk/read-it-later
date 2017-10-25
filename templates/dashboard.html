@@ -116,7 +116,7 @@
 	theme:"light",
 	type:"orange",
     buttons: {
-        archive: {
+        confirm: {
         btnClass: 'btn-orange',
    		action: function () {
         	$.ajax({
@@ -217,6 +217,7 @@
         cancel: function () {
                 $.alert({
        				 title: 'Cancelled!',
+       				 content: "And that articles lives another day!",
         			 theme: "light",
         			 type:"green"
     });

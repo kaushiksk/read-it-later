@@ -211,7 +211,7 @@ def add_bookmark():
                 
                 if len(data)==0:  
                     article = extract_article(url)
-
+                    app.logger.info("ARTICLE PARSED")
                     if article == "Error":
                         flash('The url does not point to a valid article.', 'danger')
                         cur.close()

@@ -17,7 +17,10 @@ class RegisterForm(Form):
         confirm = PasswordField('Confirm Password')
         
 
-categories = [('Academia', 'Academia'), ('Entertainment', 'Entertainment'), ('Sports', 'Sports'), ('Music', 'Music'), ('Art', 'Art'),('Politics', 'Politics'),('Other','Other')]
+categories = [('Academia', 'Academia'), ('Entertainment', 'Entertainment'),\
+             ('Sports', 'Sports'), ('Music', 'Music'), ('Art', 'Art'),\
+             ('Politics', 'Politics'),('Science','Science'),('Technology','Technology'),\
+             ('Film','Film'),('India','India'),('History','History'),('Other','Other')]
 
 class PostForm(Form):
         url = StringField('URL of the article', [validators.Length(min=1, max=200)])       

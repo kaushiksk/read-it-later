@@ -109,10 +109,17 @@
 	$.confirm({
     title: mytitle,
     content: mycontent,
+	closeIcon: true,
+	closeIconClass: 'fa fa-close',
+	draggable: true,
+	icon:'fa fa-archive',
+	backgroundDismiss: true,
+	theme:"light",
+	type:"orange",
     buttons: {
         confirm: {
-        btnClass: 'btn-blue',
-        action: function () {
+        btnClass: 'btn-orange',
+   		action: function () {
         	$.ajax({
 			  type: "POST",
 			  contentType: "application/json; charset=utf-8",
@@ -123,13 +130,23 @@
 	        		$("#"+id).removeClass('btn-warning');
 		        	$("#"+id).addClass('btn-default');
 		        	$("#"+id).attr("title", "Unarchive");
-		        	$.alert('Bookmark Archived!');
+		        	$.alert({
+       				 title: 'Bookmark successfully archived!',
+        			 content: 'The bookmark remains unread!',
+        			 theme: "light",
+        			 type:"green"
+        			     });
 		        }
 		        else{
 		        	$("#"+id).removeClass('btn-default');
 		        	$("#"+id).addClass('btn-warning');
 		        	$("#"+id).attr("title", "Archive");
-		        	$.alert('Bookmark Unarchived!');
+		        	$.alert({
+       				 title: 'Bookmark successfully Unarchived!',
+        			 content: 'The bookmark is back in your dashboard!',
+        			 theme: "light",
+        			 type:"green"
+        			     });
 		        }
 
 			  },
@@ -141,7 +158,12 @@
         }
     },
         cancel: function () {
-            $.alert('Canceled!');
+                $.alert({
+       				 title: 'Cancelled!',
+        			 content: 'The bookmark remains unread!',
+        			 theme: "light",
+        			 type:"green"
+    });
         }
     }
 });

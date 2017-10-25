@@ -259,7 +259,12 @@ def archive():
     #print json.loads(request.form["b_id"])
     return jsonify({"data":"pass"})  
     
+@app.route('/delete-bookmark', methods=['POST']) 
+def delete():
+    b_id, p_id = request.json["b_id-p_id"].split("-")
 
+    print b_id, p_id
+    return jsonify({"data":"pass"})  
 
 @app.route('/logout')
 def logout():

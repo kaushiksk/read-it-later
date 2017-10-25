@@ -11,26 +11,26 @@
   <div class="panel-group" id="accordion">
           <div class="panel panel-default">
               
-                      <a class="btn btn-block btn-index btn-md btn-primary" href="/dashboard"><strong>Unread</strong></a>
+                      <a class="btn btn-block btn-index btn-md btn-inverse" href="/dashboard"><strong>Unread</strong></a>
                  
           <div class="panel panel-default">
               
                   <form action="" method="post">
-                      <input style="font-weight: bold;" class="btn btn-block btn-index btn-md btn-primary" type="submit" name="archive" value="Archive">
+                      <input style="font-weight: bold;" class="btn btn-block btn-index btn-md btn-inverse" type="submit" name="archive" value="Archive">
                
               
           </div>
           <div class="panel panel-default">
               
                  
-                      <a class="btn btn-block btn-index btn-md btn-primary" data-toggle="collapse" data-parent="#accordion" href="#collapseThree"><strong>Categories</strong></a>
+                      <a class="btn btn-block btn-index btn-md btn-inverse" data-toggle="collapse" data-parent="#accordion" href="#collapseThree"><strong>Categories</strong></a>
                  
             
               <div id="collapseThree" class="panel-collapse collapse {% if cat %}in{% endif %}">
                 <div class="panel-body">
                 <form action="" method="post">
                 {% for category in categories %}
-                <input type="submit" name="category" class="btn btn-block btn-index btn-md btn-inverse" value="{{ category }}">
+                <input type="submit" name="category" class="btn btn-block btn-index btn-md btn-primary" value="{{ category }}">
                 {% endfor %}
                 </form>
                   </div>
@@ -40,14 +40,14 @@
           <div class="panel panel-default">
               
                  
-                      <a class="btn btn-block btn-index btn-md btn-primary" data-toggle="collapse" data-parent="#accordion" href="#collapseFour"><strong>Months</strong></a>
+                      <a class="btn btn-block btn-index btn-md btn-inverse" data-toggle="collapse" data-parent="#accordion" href="#collapseFour"><strong>Months</strong></a>
                  
             
               <div id="collapseFour" class="panel-collapse collapse {% if month %}in{% endif %}">
                 <div class="panel-body">
                 <form action="" method="post">
                 {% for month in months %}
-                <input type="submit" name="month" class="btn btn-block btn-index btn-md btn-inverse" value="{{ month }}">
+                <input type="submit" name="month" class="btn btn-block btn-index btn-md btn-primary" value="{{ month }}">
                 {% endfor %}
                 </form>
                   </div>
@@ -68,13 +68,14 @@
             <div class="col-md-5">
                 <a href="#">
                     <img class="img-responsive" src="{{article.thumb}}" alt="">
+                    <h6 class="cat"><strong>#{{ article.category}}</strong></h6	>
                 </a>
             </div>
             <div class="col-md-7">
                 <h3 class="animated fadeInUp" style="margin-top:0;">{{ article.title }}</h3>
                 <p class="animated fadeInUp">{{ article.description.decode("utf-8") }}</p>
                 <a class="btn btn-primary" href="{{ article.url }}" target="_blank">Read Full Article <span class="glyphicon glyphicon-chevron-right"></span></a>
-                <button class="btn btn-danger fui-trash delete" value="" title="Delete">
+                <button class="btn btn-danger fui-trash delete" value="" id="{{ article.b_id }}-{{article.p_id}}" title="Delete">
                 {% if article.read_status %}
                 <button style="margin-left:1%;" class="btn btn-default fui-export archive" id="{{ article.b_id }}" title="Unarchive">
                 {% else %}
@@ -83,7 +84,7 @@
                 
             </div>
         </div>
-        <hr><hr>
+        <hr class="first"><hr class="second">
  
     {% endfor %}
 
@@ -109,15 +110,13 @@
 	$.confirm({
     title: mytitle,
     content: mycontent,
-	closeIcon: true,
-	closeIconClass: 'fa fa-close',
 	draggable: true,
 	icon:'fa fa-archive',
 	backgroundDismiss: true,
 	theme:"light",
 	type:"orange",
     buttons: {
-        confirm: {
+        archive: {
         btnClass: 'btn-orange',
    		action: function () {
         	$.ajax({
@@ -170,6 +169,77 @@
 		
 	});
 
+
+	$(".delete").click(function(){
+	var id = this.id;
+	$.confirm({
+    title: "Confirm Delete?",
+    content: "This action cannot be undone",
+	draggable: true,
+	icon:'fui-trash',
+	backgroundDismiss: true,
+	theme:"light",
+	type:"red",
+    buttons: {
+        delete: {
+        btnClass: 'btn-red',
+   		action: function () {
+        	$.ajax({
+			  type: "POST",
+			  contentType: "application/json; charset=utf-8",
+			  url: "/delete-bookmark",
+			  data: JSON.stringify({ "b_id-p_id" : id }),
+			  success: function (stuff) {
+			  		$("#"+id).closest(".row").removeClass("fadeInUp");
+		        	$("#"+id).closest(".row").addClass("fadeOutUp");
+		        	$.alert({
+       				 title: 'Bookmark deleted',
+        			 content: 'The bookmark has been removed permanently',
+        			 theme: "light",
+        			 type:"green",
+        			 buttons:{
+        			 	ok: function(){
+        			 		$("#"+id).closest(".row").next("hr").remove();
+		        			$("#"+id).closest(".row").remove(); 
+        			     }
+        			 	}
+        			 });
+		        	
+
+		        	},
+			   dataType: "json"
+			});
+        	
+     
+            
+        }
+    },
+        cancel: function () {
+                $.alert({
+       				 title: 'Cancelled!',
+        			 theme: "light",
+        			 type:"green"
+    });
+        }
+    }
+});
+		
+	});
+
 </script>
 
+{% endblock %}
+{% block style %}
+<style>
+.cat{
+	position:absolute; 
+	bottom:2%; 
+	left:1%; 
+	background-color: #48c9b0; 
+	color:#ffffff; 
+	text-transform: uppercase;
+	padding: 5px 5px;
+	border-radius: 5%;
+}
+</style>
 {% endblock %}

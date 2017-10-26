@@ -148,7 +148,7 @@ def dashboard():
             
         for entry in data:
 		#entry["title"] = entry["title"][:45] + " ..."
-		    entry["description"] = parseme(entry["description"],150)
+		    entry["shortdescription"] = parseme(entry["description"],150)
         
         categories = list(set([entry["category"] for entry in data]))
         months = list(set([entry["time_added"].strftime("%B") for entry in data]))
@@ -168,6 +168,12 @@ def dashboard():
                 data = [item for item in data if entry["time_added"].strftime("%B")==month]
                 return render_template('dashboard.html', articles=data,\
                                         categories=categories, months=months, month=month)
+            elif 'search' in request.form:
+                query = request.form['search'].lower()
+                data = [item for item in data if query in item['title'].lower()\
+                         or query in item['description'].lower()]
+                return render_template('dashboard.html', articles=data,\
+                                        categories=categories, months=months, query=query)
         elif request.method =='GET':
             data = [item for item in data if item["read_status"]==0]
             pprint(data[0])
@@ -187,8 +193,7 @@ def pub_dashboard():
                         FROM post P 
                         """)
 
-        data = list(cur.fetchall())
-        cur.close()
+        data = list(cur.fetchall())        
         
         if len(data)==0 :
             return render_template('pub_dashboard.html')
@@ -197,13 +202,20 @@ def pub_dashboard():
 		#entry["title"] = entry["title"][:45] + " ..."
 		    entry["description"] = parseme(entry["description"],150)		    
 	    
-        
+        cur.execute("""SELECT
+                        p_id FROM bookmark                   
+                        WHERE  username=\'{}\';""".format(session["username"]))
+
+        my_pids = list(cur.fetchall())
+        cur.close()
+        my_pids = [entry["p_id"] for entry in my_pids]
+        #print my_pids
         #categories = list(set(['Computer Engineering', 'Electronics & Communication', 'Chemical Engineering', 'Electrical Engineering', 'Mechanical Engineering']))
         departments = dict([('Computer Engineering', 'CO'), ('Electronics & Communication', 'EC'), ('Chemical Engineering', 'CH'), ('Electrical Engineering', 'EE'), ('Mechanical Engineering', 'ME')])
         #categories = list(set([entry["category"] for entry in data]))
         #months = list(set([entry["time_added"].strftime("%B") for entry in data]))
         if request.method == 'POST':
-            print request.form
+            #print request.form
             if 'department' in request.form:
                 cat = request.form['department']
                 
@@ -228,7 +240,7 @@ def pub_dashboard():
                 
                 data = [item for item in data if (item["p_id"] in available)]
                 return render_template('pub_dashboard.html', articles=data,\
-                                        departments=departments.keys(), dept=cat)
+                                        departments=departments.keys(), dept=cat, my_pids=my_pids)
                                         
             '''
             elif 'month' in request.form:
@@ -240,7 +252,7 @@ def pub_dashboard():
            
             #pprint(data[0])
             return render_template('pub_dashboard.html', articles=data,\
-                                    departments=departments.keys(), )
+                                    departments=departments.keys(), my_pids=my_pids)
     else:
         flash('You need to be logged in to access!', 'danger')
         return redirect(url_for('login'))
@@ -335,14 +347,14 @@ def archive():
 @app.route('/add-mybookmark', methods=['POST'])	
 def addmybookmark():
     p_id = request.json["p_id"]
-    #cur = mysql.connection.cursor()
-    #cur.execute("""UPDATE 
-      #              bookmark 
-       ##            WHERE b_id=%s"""%b_id)
-    #cur.close()
-    #mysql.connection.commit()
+    category = request.json["category"]
+    cur = mysql.connection.cursor()
+    cur.callproc('add_bookmark', (session['username'], \
+                                p_id, category)) 
+    cur.close()
+    mysql.connection.commit()
     #print json.loads(request.form["b_id"])
-    print p_id
+    print p_id, category
     return jsonify({"data":"pass"})   
     
 @app.route('/delete-bookmark', methods=['POST']) 

@@ -67,6 +67,7 @@
 {% elif month %}
 <h2> {{ month }} </h2>
 {% endif %}
+
   {% for article in articles %}
   <div class="row animated fadeInUp">
             <div class="col-md-5">
@@ -104,7 +105,7 @@
 
 	$.confirm({
     title: "Bookmark this!",
-    content: "This bookmark will be added to your account",
+    content: "url:{{ url_for('static',filename='category-form.html') }}",
 	draggable: true,
 	icon:'fui-plus',
 	backgroundDismiss: true,
@@ -114,11 +115,12 @@
         add: {
         btnClass: 'btn-blue',
    		action: function () {
+        var input = this.$content.find('select');
         	$.ajax({
 			  type: "POST",
 			  contentType: "application/json; charset=utf-8",
 			  url: "/add-mybookmark",
-			  data: JSON.stringify({ "p_id" : id }),
+			  data: JSON.stringify({ "p_id" : id, "category":input.find( "option:selected" ).text()}),
 			  success: function (stuff) {
               $("#"+id).removeClass('addme');
 	        		$("#"+id).removeClass('fui-plus');

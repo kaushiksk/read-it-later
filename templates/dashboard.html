@@ -6,7 +6,9 @@
 <div class="row">
 <!--style="position:fixed;  float:none; display: inline-block;-->
       <div class="col-sm-2" >
-     
+     {% if cat or month or query %}
+     <h2> </h2>
+     {% endif %}
        
   <div class="panel-group" id="accordion">
           <div class="panel panel-default">
@@ -62,6 +64,8 @@
 <h2> {{ cat }} </h2>
 {% elif month %}
 <h2> {{ month }} </h2>
+{% elif query %}
+<h2> queries matching: '{{ query }}' </h2>
 {% endif %}
   {% for article in articles %}
   <div class="row animated fadeInUp">
@@ -73,7 +77,7 @@
             </div>
             <div class="col-md-7">
                 <h3 class="animated fadeInUp" style="margin-top:0;">{{ article.title }}</h3>
-                <p class="animated fadeInUp">{{ article.description.decode("utf-8") }}</p>
+                <p class="animated fadeInUp">{{ article.shortdescription.decode("utf-8") }}</p>
                 <a class="btn btn-primary" href="{{ article.url }}" target="_blank">Read Full Article <span class="glyphicon glyphicon-chevron-right"></span></a>
                 <button class="btn btn-danger fui-trash delete" value="" id="{{ article.b_id }}-{{article.p_id}}" title="Delete">
                 {% if article.read_status %}

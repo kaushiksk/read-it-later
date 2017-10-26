@@ -102,10 +102,12 @@
 	if ($("#"+id).attr("title") == "Archive"){
 		mytitle = 'Want to archive?';
 		mycontent = 'This post will be pushed to the Archives section';
+		mycancel = 'The bookmark remains unread!';
 	}
 	else{
 		mytitle = 'Want to unarchive?';
 		mycontent = 'This post will be pushed to the Unread section';
+		mycancel = 'The books stays in the archive section!';
 	}
 	$.confirm({
     title: mytitle,
@@ -131,7 +133,7 @@
 		        	$("#"+id).attr("title", "Unarchive");
 		        	$.alert({
        				 title: 'Bookmark successfully archived!',
-        			 content: 'The bookmark remains unread!',
+        			 content: 'The bookmark will no longer appear on your dashboard!',
         			 theme: "light",
         			 type:"green"
         			     });
@@ -159,7 +161,7 @@
         cancel: function () {
                 $.alert({
        				 title: 'Cancelled!',
-        			 content: 'The bookmark remains unread!',
+        			 content: mycancel,
         			 theme: "light",
         			 type:"green"
     });

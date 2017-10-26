@@ -142,13 +142,13 @@ def dashboard():
 
         data = list(cur.fetchall())
         cur.close()
+        
+        if len(data)==0 :
+            return render_template('dashboard.html')
+            
         for entry in data:
 		#entry["title"] = entry["title"][:45] + " ..."
 		    entry["description"] = parseme(entry["description"],150)
-		    
-	if len(data)==0:
-	    render_template('dashboard.html')
-	
         
         categories = list(set([entry["category"] for entry in data]))
         months = list(set([entry["time_added"].strftime("%B") for entry in data]))

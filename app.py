@@ -176,6 +176,75 @@ def dashboard():
     else:
         flash('You need to be logged in to access!', 'danger')
         return redirect(url_for('login'))
+        
+        
+@app.route('/pub_dashboard', methods=['GET', 'POST'])
+def pub_dashboard():
+    if 'logged_in' in session:
+        cur = mysql.connection.cursor()
+        cur.execute("""SELECT
+                        *                    
+                        FROM post P 
+                        """)
+
+        data = list(cur.fetchall())
+        cur.close()
+        
+        if len(data)==0 :
+            return render_template('pub_dashboard.html')
+            
+        for entry in data:
+		#entry["title"] = entry["title"][:45] + " ..."
+		    entry["description"] = parseme(entry["description"],150)		    
+	    
+        
+        #categories = list(set(['Computer Engineering', 'Electronics & Communication', 'Chemical Engineering', 'Electrical Engineering', 'Mechanical Engineering']))
+        departments = dict([('Computer Engineering', 'CO'), ('Electronics & Communication', 'EC'), ('Chemical Engineering', 'CH'), ('Electrical Engineering', 'EE'), ('Mechanical Engineering', 'ME')])
+        #categories = list(set([entry["category"] for entry in data]))
+        #months = list(set([entry["time_added"].strftime("%B") for entry in data]))
+        if request.method == 'POST':
+            print request.form
+            if 'department' in request.form:
+                cat = request.form['department']
+                
+                cur = mysql.connection.cursor()
+                cur.execute("""SELECT 
+                                bookmark.p_id 
+                                FROM users 
+                                INNER JOIN 
+                                bookmark 
+                                ON 
+                                users.username=bookmark.username 
+                                WHERE 
+                                users.d_id=\'{}\';
+                                """.format(departments[cat]))
+
+                available = list(cur.fetchall())
+                available = [item['p_id'] for item in available] 
+                available = set(available)
+                print available
+                
+                cur.close()
+                
+                data = [item for item in data if (item["p_id"] in available)]
+                return render_template('pub_dashboard.html', articles=data,\
+                                        departments=departments.keys(), dept=cat)
+                                        
+            '''
+            elif 'month' in request.form:
+                month = request.form['month']
+                data = [item for item in data if entry["time_added"].strftime("%B")==month]
+                return render_template('dashboard.html', articles=data,\
+                                        categories=categories, months=months, month=month)'''
+        if request.method =='GET':
+           
+            #pprint(data[0])
+            return render_template('pub_dashboard.html', articles=data,\
+                                    departments=departments.keys(), )
+    else:
+        flash('You need to be logged in to access!', 'danger')
+        return redirect(url_for('login'))
+        
 
 @app.route('/add_bookmark', methods=['GET', 'POST'])
 def add_bookmark():
@@ -261,7 +330,20 @@ def archive():
     cur.close()
     mysql.connection.commit()
     #print json.loads(request.form["b_id"])
-    return jsonify({"data":"pass"})  
+    return jsonify({"data":"pass"}) 
+
+@app.route('/add-mybookmark', methods=['POST'])	
+def addmybookmark():
+    p_id = request.json["p_id"]
+    #cur = mysql.connection.cursor()
+    #cur.execute("""UPDATE 
+      #              bookmark 
+       ##            WHERE b_id=%s"""%b_id)
+    #cur.close()
+    #mysql.connection.commit()
+    #print json.loads(request.form["b_id"])
+    print p_id
+    return jsonify({"data":"pass"})   
     
 @app.route('/delete-bookmark', methods=['POST']) 
 def delete():

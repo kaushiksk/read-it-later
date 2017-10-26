@@ -145,6 +145,10 @@ def dashboard():
         for entry in data:
 		#entry["title"] = entry["title"][:45] + " ..."
 		    entry["description"] = parseme(entry["description"],150)
+		    
+	if len(data)==0:
+	    render_template('dashboard.html')
+	
         
         categories = list(set([entry["category"] for entry in data]))
         months = list(set([entry["time_added"].strftime("%B") for entry in data]))
@@ -262,7 +266,12 @@ def archive():
 @app.route('/delete-bookmark', methods=['POST']) 
 def delete():
     b_id, p_id = request.json["b_id-p_id"].split("-")
-
+    cur = mysql.connection.cursor()
+    cur.execute("""DELETE 
+                    FROM bookmark                      
+                    WHERE b_id=%s"""%b_id)
+    cur.close()
+    mysql.connection.commit()
     print b_id, p_id
     return jsonify({"data":"pass"})  
 

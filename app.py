@@ -5,6 +5,7 @@ import json
 from flask_mysqldb import MySQL
 from passlib.hash import sha256_crypt
 from pprint import pprint
+from collections import Counter
 
 from forms import RegisterForm, PostForm
 from posts import extract_article
@@ -331,6 +332,45 @@ def add_bookmark():
                   
     return render_template('add_bookmark.html', form=form)        
 
+@app.route('/myaccount', methods=['GET'])
+def myaccount():
+    if 'logged_in' in session:
+        cur = mysql.connection.cursor()
+        cur.execute("""SELECT
+                        first_name,
+                        last_name,
+                        d_name,
+                        email,
+                        roll_no,
+                        username                    
+                        FROM users U JOIN department D
+                        ON U.d_id=D.d_id
+                        WHERE username=\'{}\' 
+                        """.format(session["username"]))
+
+        myuser = list(cur.fetchall())
+
+        cur.execute("""SELECT
+                        read_status+0 as read_status                   
+                        FROM bookmark
+                        WHERE username=\'{}\' 
+                        """.format(session["username"]))
+
+        mybookmarks = list(cur.fetchall())
+        unread = sum((d["read_status"] for d in mybookmarks[1:]),\
+         mybookmarks[0]["read_status"])
+        stats = {"total" : len(mybookmarks),
+                 "unread" : len(mybookmarks) - unread,
+                 "archived": unread,
+                 }
+        cur.close()
+        #pprint(myuser, stats)        
+        return render_template('myaccount.html', myuser=myuser[0], stats=stats)
+        
+    else:
+        flash('You need to be logged in to access!', 'danger')
+        return redirect(url_for('login'))
+
 @app.route('/archive-toggle', methods=['POST'])	
 def archive():
     b_id = request.json["b_id"]
@@ -343,6 +383,23 @@ def archive():
     mysql.connection.commit()
     #print json.loads(request.form["b_id"])
     return jsonify({"data":"pass"}) 
+
+@app.route('/get-pie-data', methods=['GET']) 
+def getpiedata ():
+    cur = mysql.connection.cursor()
+    cur.execute("""SELECT 
+                    category,
+                    COUNT(*) as count
+                    FROM bookmark
+                    WHERE username=\'{}\'
+                    GROUP BY
+                    category""".format(session["username"]))
+    data = cur.fetchall()
+    cur.close()
+    pprint(data)
+    #print json.loads(request.form["b_id"])
+    return jsonify({"data":data}) 
+
 
 @app.route('/add-mybookmark', methods=['POST'])	
 def addmybookmark():

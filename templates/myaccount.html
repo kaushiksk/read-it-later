@@ -1,0 +1,125 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+<div class="row">
+<div class="col-md-5">
+	<h2><span class="fui-user"></span> {{ myuser.first_name }} <small><strong>{{ myuser.last_name }}</strong></small></h2>
+	<p> <span class="fui-tag"></span> <strong> {{myuser.roll_no }}</strong> &#09;&nbsp;&nbsp;&nbsp; <span class="fui-mail"></span> <strong>{{ myuser.email }}</strong></p>
+	<p> <span class="fui-home"></span> <strong> {{ myuser.d_name }}</strong></p>
+	<div class="stats">
+
+	<h5 style="display:inline-block" class="palette palette-turquoise"> Bookmarks: {{ stats.total }} </h5>
+	<h5 style="display:inline-block" class="palette palette-wet-asphalt"> Unread: {{ stats.unread }} </h5>
+	<h5 style="display:inline-block" class="palette palette-asbestos"> Archived: {{ stats.archived }} </h5>
+	</div>
+	
+</div>
+<div class="col-md-7">
+<h4 class="charthead"> Cateory-wise split</h4>
+<canvas id="mypieChart" class="chartjs" width="undefined" height="undefined"></canvas>
+</div>
+
+</div>
+
+
+
+
+
+
+
+
+{% endblock %}
+
+{% block script %}
+<script src="/static/js/Chart.min.js"></script>
+
+<script>
+
+
+	
+
+    var ctx = document.getElementById("mypieChart").getContext("2d");
+    colors=["rgb(255, 99, 132)","rgb(54, 162, 235)","rgb(255, 205, 86)", "rgb(54, 56, 123)", 	"rgb(255, 12, 43)", "rgb(43, 205, 12)","rgb(206, 123, 86)","rgb(51, 129, 143)", 
+    		"rgb(211, 127, 212)","rgb(31, 13, 186)"]
+    var jsonData = $.ajax({
+      url: '/get-pie-data',
+      dataType: 'json',
+    }).done(function (results) {
+
+    var labels = [], data=[];
+    results["data"].forEach(function(entry){
+    		labels.push(entry["category"]);
+    		data.push(entry["count"]);
+    	});
+
+    var tempData = {labels: labels,
+    				datasets:[
+    				{"data":data,
+    				"label":"Category wise Split",
+    				"backgroundColor":colors.slice(0,labels.length)}
+    				]
+    			};
+    var myChart = new Chart(ctx,{type:"doughnut", data:tempData});
+          });
+   
+
+  // Get the context of the canvas element we want to select
+  /*
+  var ctx = document.getElementById("myChart").getContext("2d");
+  var data = {
+    labels: ["January", "February", "March", "April", "May", "June", "July"],
+    datasets: [
+      {
+        label: "My First dataset",
+        fillColor: "rgba(220,220,220,0.2)",
+        strokeColor: "rgba(220,220,220,1)",
+        pointColor: "rgba(220,220,220,1)",
+        pointStrokeColor: "#fff",
+        pointHighlightFill: "#fff",
+        pointHighlightStroke: "rgba(220,220,220,1)",
+        data: [65, 59, 80, 81, 56, 55, 40]
+      },
+      {
+        label: "My Second dataset",
+        fillColor: "rgba(151,0,205,0.2)",
+        strokeColor: "rgba(151,0,205,1)",
+        pointColor: "rgba(151,0,205,1)",
+        pointStrokeColor: "#fff",
+        pointHighlightFill: "#fff",
+        pointHighlightStroke: "rgba(151,0,205,1)",
+        data: [28, 48, 40, 19, 86, 27, 90]
+      }
+    ]
+  };
+  // Instantiate a new chart using 'data' (defined below)
+  var myChart = new Chart(ctx,{type:"bar", data:data});
+*/
+
+
+
+</script>
+{% endblock %}
+
+{% block style %}
+<style>
+h2, .stats{
+	margin-top:0;
+	margin-left:10%;
+}
+
+h2>small{
+	color: #1abc9c;
+}
+
+h3>small{
+	color: #1abc9c;
+}
+p{
+	margin-left:14%;
+	margin-bottom:0;
+}
+.charthead{
+	text-align: center;
+}
+</style>
+{% endblock %}

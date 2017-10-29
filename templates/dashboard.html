@@ -119,7 +119,7 @@
 	draggable: true,
 	icon:'fa fa-archive',
 	backgroundDismiss: true,
-	theme:"light",
+	theme:"modern",
 	type:"orange",
     buttons: {
         confirm: {
@@ -138,7 +138,8 @@
 		        	$.alert({
        				 title: 'Bookmark successfully archived!',
         			 content: 'The bookmark will no longer appear on your dashboard!',
-        			 theme: "light",
+        			 icon:'fa fa-check',
+        			 theme: "modern",
         			 type:"green"
         			     });
 		        }
@@ -149,7 +150,8 @@
 		        	$.alert({
        				 title: 'Bookmark successfully Unarchived!',
         			 content: 'The bookmark is back in your dashboard!',
-        			 theme: "light",
+        			 icon:'fa fa-check',
+        			 theme: "modern",
         			 type:"green"
         			     });
 		        }
@@ -182,9 +184,9 @@
     title: "Confirm Delete?",
     content: "This action cannot be undone",
 	draggable: true,
-	icon:'fui-trash',
+	icon:'fa fa-trash',
 	backgroundDismiss: true,
-	theme:"light",
+	theme:"modern",
 	type:"red",
     buttons: {
         delete: {
@@ -201,7 +203,8 @@
 		        	$.alert({
        				 title: 'Bookmark deleted',
         			 content: 'The bookmark has been removed permanently',
-        			 theme: "light",
+        			 icon:'fa fa-check',
+        			 theme: "modern",
         			 type:"green",
         			 buttons:{
         			 	ok: function(){
@@ -224,7 +227,7 @@
                 $.alert({
        				 title: 'Cancelled!',
        				 content: "And that articles lives another day!",
-        			 theme: "light",
+        			 theme: "modern",
         			 type:"green"
     });
         }

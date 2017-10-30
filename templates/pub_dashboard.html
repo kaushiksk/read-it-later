@@ -5,20 +5,284 @@
 
 <div class="row">
 <!--style="position:fixed;  float:none; display: inline-block;-->
-      <div class="col-sm-3" >
+      <div class="col-sm-4" >
      
        
   <div class="panel-group" id="accordion">
           
-                 
+          <!-- Search filter starts -->  
+
+                   <div class="panel-group">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">
+                                <a data-toggle="collapse" href="#filter1">
+                                    Filter
+                                </a>
+                                <a class="pull-right" data-toggle="collapse" href="#filter1">
+                                    <span class="glyphicon glyphicon-filter"></span>
+                                </a>
+                            </h4>
+                        </div>
+                        <div id="filter1" class="panel-collapse collapse in">
+                            <div class="panel-body">
+                                <div class="filter-setting">
+                                <form action="" method="POST">
+                                    
+                               <span><strong>Date</strong></span> 
+                                    <a class="pull-right collapsed-icon-toggle" href="#coll-0" data-toggle="collapse">
+                                        <span class="glyphicon glyphicon-plus on-closed"></span>
+                                        <span class="glyphicon glyphicon-minus on-opened"></span>
+                                        
+                                    </a>
+                                    <br/>
+                                    <div id="coll-0" class="collapse in">
+                                        <div class="padding-v-xs" data-toggle="buttons">
+                                            <label class="btn btn-default btn-xs ico">
+                                                <input type="checkbox" name="LW"
+                                                   value="true" autocomplete="off" />
+                                                <span class="icon glyphicon glyphicon-ok"></span>
+                                            </label>
+                                            <span>Last Week</span>
+                                        </div>
+                                        <div class="padding-v-xs" data-toggle="buttons">
+                                            <label class="btn btn-default btn-xs ico">
+                                                <input type="checkbox" name="LM"
+                                                   value="true" autocomplete="off"/>
+                                                <span class="icon glyphicon glyphicon-ok"></span>
+                                            </label>
+                                            <span>Last Month</span>
+                                        </div>  
+                                        <div class="padding-v-xs" data-toggle="buttons">
+                                            <label class="btn btn-default btn-xs ico">
+                                                <input type="checkbox" name="LY"
+                                                   value="true" autocomplete="off"/>
+                                                <span class="icon glyphicon glyphicon-ok"></span>
+                                            </label>
+                                            <span>Last Year</span>
+                                        </div>          
+                                        <div class="padding-v-xs" data-toggle="buttons">
+                                            <label class="btn btn-default btn-xs ico">
+                                                <input type="checkbox" name="AT"
+                                                   value="true" autocomplete="off"/>
+                                                <span class="icon glyphicon glyphicon-ok"></span>
+                                            </label>
+                                            <span>All time</span>
+                                        </div>                                
+                                    </div>
+
+                                                                       
+                                    <hr class="line"/>
+
+                                    <span><strong>Category</strong></span> 
+                                    <a class="pull-right collapsed-icon-toggle" href="#coll-1" data-toggle="collapse">
+                                        <span class="glyphicon glyphicon-plus on-closed"></span>
+                                        <span class="glyphicon glyphicon-minus on-opened"></span>
+                                        
+                                    </a>
+                                    <br/>
+                                    <div id="coll-1" class="scroll-v-250px collapse in">
+
+                                        <div class="padding-v-xs" data-toggle="buttons">
+                                            <label class="btn btn-default btn-xs ico">
+                                                <input type="checkbox" name="Academia"
+                                                   value="true" autocomplete="off" />
+                                                <span class="icon glyphicon glyphicon-ok"></span>
+                                            </label>
+                                            <span>Academia</span>
+                                        </div>
+
+                                         <div class="padding-v-xs" data-toggle="buttons">
+                                            <label class="btn btn-default btn-xs ico">
+                                                <input type="checkbox" name="Entertainment"
+                                                   value="true" autocomplete="off" />
+                                                <span class="icon glyphicon glyphicon-ok"></span>
+                                            </label>
+                                            <span>Entertainment</span>
+                                        </div>
+
+                                         <div class="padding-v-xs" data-toggle="buttons">
+                                            <label class="btn btn-default btn-xs ico">
+                                                <input type="checkbox" name="Sports"
+                                                   value="true" autocomplete="off" />
+                                                <span class="icon glyphicon glyphicon-ok"></span>
+                                            </label>
+                                            <span>Sports</span>
+                                        </div>
+
+                                         <div class="padding-v-xs" data-toggle="buttons">
+                                            <label class="btn btn-default btn-xs ico">
+                                                <input type="checkbox" name="Music"
+                                                   value="true" autocomplete="off" />
+                                                <span class="icon glyphicon glyphicon-ok"></span>
+                                            </label>
+                                            <span>Music</span>
+                                        </div>
+
+                                         <div class="padding-v-xs" data-toggle="buttons">
+                                            <label class="btn btn-default btn-xs ico">
+                                                <input type="checkbox" name="Art"
+                                                   value="true" autocomplete="off" />
+                                                <span class="icon glyphicon glyphicon-ok"></span>
+                                            </label>
+                                            <span>Art</span>
+                                        </div>
+
+                                        <div class="padding-v-xs" data-toggle="buttons">
+                                            <label class="btn btn-default btn-xs ico">
+                                                <input type="checkbox" name="Politics"
+                                                   value="true" autocomplete="off" />
+                                                <span class="icon glyphicon glyphicon-ok"></span>
+                                            </label>
+                                            <span>Politics</span>
+                                        </div>
+
+                                        <div class="padding-v-xs" data-toggle="buttons">
+                                            <label class="btn btn-default btn-xs ico">
+                                                <input type="checkbox" name="Science"
+                                                   value="true" autocomplete="off" />
+                                                <span class="icon glyphicon glyphicon-ok"></span>
+                                            </label>
+                                            <span>Science</span>
+                                        </div>
+                                                  
+                                        <div class="padding-v-xs" data-toggle="buttons">
+                                            <label class="btn btn-default btn-xs ico">
+                                                <input type="checkbox" name="Technology"
+                                                   value="true" autocomplete="off" />
+                                                <span class="icon glyphicon glyphicon-ok"></span>
+                                            </label>
+                                            <span>Technology</span>
+                                        </div>  
+
+                                        <div class="padding-v-xs" data-toggle="buttons">
+                                            <label class="btn btn-default btn-xs ico">
+                                                <input type="checkbox" name="Film"
+                                                   value="true" autocomplete="off" />
+                                                <span class="icon glyphicon glyphicon-ok"></span>
+                                            </label>
+                                            <span>Film</span>
+                                        </div>
+
+                                        <div class="padding-v-xs" data-toggle="buttons">
+                                            <label class="btn btn-default btn-xs ico">
+                                                <input type="checkbox" name="India"
+                                                   value="true" autocomplete="off" />
+                                                <span class="icon glyphicon glyphicon-ok"></span>
+                                            </label>
+                                            <span>India</span>
+                                        </div>     
+
+                                        <div class="padding-v-xs" data-toggle="buttons">
+                                            <label class="btn btn-default btn-xs ico">
+                                                <input type="checkbox" name="History"
+                                                   value="true" autocomplete="off" />
+                                                <span class="icon glyphicon glyphicon-ok"></span>
+                                            </label>
+                                            <span>History</span>
+                                        </div>
+
+                                        <div class="padding-v-xs" data-toggle="buttons">
+                                            <label class="btn btn-default btn-xs ico">
+                                                <input type="checkbox" name="Other"
+                                                   value="true" autocomplete="off" />
+                                                <span class="icon glyphicon glyphicon-ok"></span>
+                                            </label>
+                                            <span>Other</span>
+                                        </div>      
+                                    </div>
+
+                                        
+
+                                    <hr class="line"/>
+
+                                    <span><strong>Department</strong></span>  
+                                    <a class="pull-right collapsed-icon-toggle" href="#coll-2" data-toggle="collapse">
+                                        <span class="glyphicon glyphicon-minus on-opened"></span>
+                                        <span class="glyphicon glyphicon-plus on-closed"></span>
+                                    </a>
+                                    
+                                    <br/>
+
+                                    <div id="coll-2" class="scroll-v-250px collapse in">                                     
+
+                                        <div class="padding-v-xs" data-toggle="buttons">
+                                        <label class="btn btn-default btn-xs ico">
+                                            <input type="checkbox" name="CO"
+                                                   value="true" autocomplete="off" />
+                                            <span class="icon glyphicon glyphicon-ok"></span>
+                                        </label>
+                                            <span>Computer Engineering</span>
+                                        </div>
+
+                                        <div class="padding-v-xs" data-toggle="buttons">
+                                            <label class="btn btn-default btn-xs ico">
+                                                <input type="checkbox" name="EC"
+                                                   value="true" autocomplete="off" />
+                                                <span class="icon glyphicon glyphicon-ok"></span>
+                                            </label>
+                                            <span>Electronics & Communication</span>
+                                        </div>
+                                        <div class="padding-v-xs" data-toggle="buttons">
+                                            <label class="btn btn-default btn-xs ico">
+                                                <input type="checkbox" name="CH"
+                                                   value="true" autocomplete="off" />
+                                                <span class="icon glyphicon glyphicon-ok"></span>
+                                            </label>
+                                            <span>Chemical Engineering</span>
+                                        </div>
+                                        <div class="padding-v-xs" data-toggle="buttons">
+                                            <label class="btn btn-default btn-xs ico">
+                                                <input type="checkbox" name="EE"
+                                                   value="true" autocomplete="off" />
+                                                <span class="icon glyphicon glyphicon-ok"></span>
+                                            </label>
+                                            <span>Electrical Engineering</span>
+                                        </div>
+                                        <div class="padding-v-xs" data-toggle="buttons">
+                                            <label class="btn btn-default btn-xs ico">
+                                                <input type="checkbox" name="ME"
+                                                   value="true" autocomplete="off" />
+                                                <span class="icon glyphicon glyphicon-ok"></span>
+                                            </label>
+                                            <span>Mechanical Engineering</span>
+                                        </div>                                        
+                                    </div>
+
+                                    <hr class="line"/>
+                                    
+                                    <button type="submit" class="btn btn-block btn-success" value="Submit">
+                                        <span class="glyphicon glyphicon-search"></span>
+                                    </button>
+                                </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Search filter ends -->
+
+            
+
+          <!--       
           <div class="panel panel-default">
                  <a class="btn btn-block btn-index btn-md btn-inverse" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo"><strong>Custom Query</strong></a>
                   <div id="collapseTwo" class="panel-collapse collapse {% if dept %}in{% endif %}">
                 <div class="panel-body">
-                <form action="" method="post">
-                  <!-- Add custom form here -->
+               
+                  Add the custom form here
+                   <form>            
+                   
+                   
                 
-                </form>
+                             
+
+                   <p><input type="submit" class="btn btn-lg btn-primary btn-block" value="Submit"></p>
+                    
+                  </form>
+                    
+                
                   </div>
               </div>
                
@@ -57,11 +321,15 @@
                   </div>
               </div>
           </div>
+
+        -->
+
       </div>
   </div>
 
 
-<div class="col-sm-9" style="overflow-y:scroll; height:100vh;">
+
+<div class="col-sm-8" style="overflow-y:scroll; height:100vh;">
 {% if dept %}
 <h2> {{ dept }} </h2>
 {% elif month %}

@@ -188,6 +188,7 @@ def dashboard():
 @app.route('/pub_dashboard', methods=['GET', 'POST'])
 def pub_dashboard():
     if 'logged_in' in session:
+           
         cur = mysql.connection.cursor()
         cur.execute("""SELECT
                         *                    
@@ -204,51 +205,103 @@ def pub_dashboard():
 		    entry["description"] = parseme(entry["description"],150)		    
 	    
         cur.execute("""SELECT
-                        p_id FROM bookmark                   
-                        WHERE  username=\'{}\';""".format(session["username"]))
+                        p_id, category 
+                        FROM 
+                        bookmark""")
 
-        my_pids = list(cur.fetchall())
+        bookmarks = list(cur.fetchall())
         cur.close()
-        my_pids = [entry["p_id"] for entry in my_pids]
+        my_pids = [entry["p_id"] for entry in bookmarks]
         #print my_pids
         #categories = list(set(['Computer Engineering', 'Electronics & Communication', 'Chemical Engineering', 'Electrical Engineering', 'Mechanical Engineering']))
         departments = dict([('Computer Engineering', 'CO'), ('Electronics & Communication', 'EC'), ('Chemical Engineering', 'CH'), ('Electrical Engineering', 'EE'), ('Mechanical Engineering', 'ME')])
         #categories = list(set([entry["category"] for entry in data]))
         #months = list(set([entry["time_added"].strftime("%B") for entry in data]))
+        
+       
+        categories = list(set([entry["category"] for entry in bookmarks]))
+        print categories
+        
         if request.method == 'POST':
-            #print request.form
-            if 'department' in request.form:
-                cat = request.form['department']
+               
+            cond1 = ''
+            
+            if request.form.get('LW'):
+                cond1+='DATEDIFF(DATE(bookmark.time_added), CURDATE())<=7 OR '
+            if request.form.get('LM'):
+                cond1+='MONTH(bookmark.time_added)=MONTH(CURRENT_DATE()) OR '
+            if request.form.get('LM'):
+                cond1+='YEAR(bookmark.time_added)=YEAR(CURRENT_DATE()) OR '
                 
-                cur = mysql.connection.cursor()
-                cur.execute("""SELECT 
-                                bookmark.p_id 
-                                FROM users 
-                                INNER JOIN 
-                                bookmark 
-                                ON 
-                                users.username=bookmark.username 
-                                WHERE 
-                                users.d_id=\'{}\';
-                                """.format(departments[cat]))
+            
+            if len(cond1) != 0:    
+                cond1 = cond1[:-4]   
+                    
+                
+            
+            cond2 = ''
+            
+            for category in categories:                      
+                if request.form.get(category):
+                    cond2+='bookmark.category=\'{}\' OR '.format(category)
+                    
+            if len(cond2) != 0:    
+                cond2 = cond2[:-4]          
 
-                available = list(cur.fetchall())
-                available = [item['p_id'] for item in available] 
-                available = set(available)
-                print available
+         
+                        
+            cond3 = ''      
+                      
+            if request.form.get('CO'):
+                cond3+='users.d_id=\'CO\' OR '
+            if request.form.get('EC'):
+                cond3+='users.d_id=\'EC\' OR '
+            if request.form.get('CH'):
+                cond3+='users.d_id=\'CH\' OR '
+            if request.form.get('EE'):
+                cond3+='users.d_id=\'EE\' OR '
+            if request.form.get('ME'):
+                cond3+='users.d_id=\'ME\' OR '   
                 
-                cur.close()
+            if len(cond3) != 0:    
+                cond3 = cond3[:-4]
                 
-                data = [item for item in data if (item["p_id"] in available)]
-                return render_template('pub_dashboard.html', articles=data,\
-                                        departments=departments.keys(), dept=cat, my_pids=my_pids)
-                                        
-            '''
-            elif 'month' in request.form:
-                month = request.form['month']
-                data = [item for item in data if entry["time_added"].strftime("%B")==month]
-                return render_template('dashboard.html', articles=data,\
-                                        categories=categories, months=months, month=month)'''
+            cond = ''    
+            if len(cond1) != 0: 
+                cond += cond1
+            if len(cond)!=0 and len(cond2) != 0: 
+                cond = cond + ' AND ' + cond2
+            if len(cond)!=0 and len(cond3) != 0: 
+                cond = cond + ' AND ' + cond3
+
+                
+            cond = 'WHERE '+cond    
+            print 'Query condition:', cond
+            
+            cur = mysql.connection.cursor()
+            cur.execute("""SELECT 
+                            bookmark.p_id 
+                            FROM users 
+                            INNER JOIN 
+                            bookmark 
+                            ON 
+                            users.username=bookmark.username                             
+                            {};
+                            """.format(cond))
+
+            available = list(cur.fetchall())
+            available = [item['p_id'] for item in available] 
+            
+            print available
+            
+            cur.close()
+            
+            data = [item for item in data if (item["p_id"] in available)]
+            
+            return render_template('pub_dashboard.html', articles=data,\
+                                    departments=departments.keys(), my_pids=my_pids, categories=categories)       
+        
+            
         if request.method =='GET':
            
             #pprint(data[0])

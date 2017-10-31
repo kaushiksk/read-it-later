@@ -375,9 +375,9 @@
     title: "Bookmark this!",
     content: "url:{{ url_for('static',filename='category-form.html') }}",
 	draggable: true,
-	icon:'fui-plus',
+	icon:'fa fa-plus',
 	backgroundDismiss: true,
-	theme:"light",
+	theme:"modern",
 	type:"blue",
     buttons: {
         add: {
@@ -399,7 +399,8 @@
 		        	$.alert({
        				 title: 'Bookmark successfully added!',
         			 content: 'The bookmark is now on your dashboard!',
-        			 theme: "light",
+                     icon:'fa fa-check',
+        			 theme: "modern",
         			 type:"green"
         			     });
 		        
@@ -415,7 +416,7 @@
                 $.alert({
        				 title: 'Cancelled!',
         			 content: 'Bookmark not added',
-        			 theme: "light",
+        			 theme: "modern",
         			 type:"green"
     });
         }

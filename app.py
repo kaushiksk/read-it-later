@@ -202,7 +202,18 @@ def pub_dashboard():
             
         for entry in data:
 		#entry["title"] = entry["title"][:45] + " ..."
-		    entry["description"] = parseme(entry["description"],150)		    
+		    entry["description"] = parseme(entry["description"],150)
+		    
+        cur.execute("""SELECT
+                        p_id, category 
+                        FROM 
+                        bookmark
+                        WHERE
+                        username=\'{}\'""".format(session["username"]))   	
+        
+        bookmarks = list(cur.fetchall())    
+		    
+        my_pids = [entry["p_id"] for entry in bookmarks]    	    
 	    
         cur.execute("""SELECT
                         p_id, category 
@@ -211,7 +222,7 @@ def pub_dashboard():
 
         bookmarks = list(cur.fetchall())
         cur.close()
-        my_pids = [entry["p_id"] for entry in bookmarks]
+        
         #print my_pids
         #categories = list(set(['Computer Engineering', 'Electronics & Communication', 'Chemical Engineering', 'Electrical Engineering', 'Mechanical Engineering']))
         departments = dict([('Computer Engineering', 'CO'), ('Electronics & Communication', 'EC'), ('Chemical Engineering', 'CH'), ('Electrical Engineering', 'EE'), ('Mechanical Engineering', 'ME')])
@@ -236,7 +247,8 @@ def pub_dashboard():
             
             if len(cond1) != 0:    
                 cond1 = cond1[:-4]   
-                    
+             
+            print cond1        
                 
             
             cond2 = ''
@@ -247,8 +259,9 @@ def pub_dashboard():
                     
             if len(cond2) != 0:    
                 cond2 = cond2[:-4]          
-
-         
+            print cond2     
+                
+         	
                         
             cond3 = ''      
                       
@@ -265,17 +278,25 @@ def pub_dashboard():
                 
             if len(cond3) != 0:    
                 cond3 = cond3[:-4]
+            print cond3      
                 
             cond = ''    
             if len(cond1) != 0: 
                 cond += cond1
+                
             if len(cond)!=0 and len(cond2) != 0: 
                 cond = cond + ' AND ' + cond2
+            elif len(cond)==0 and len(cond2) != 0:
+                cond += cond2
+                                
             if len(cond)!=0 and len(cond3) != 0: 
                 cond = cond + ' AND ' + cond3
+            elif len(cond)==0 and len(cond3) != 0:
+                cond += cond3
 
-                
-            cond = 'WHERE '+cond    
+            
+            if len(cond) != 0:    
+            	cond = 'WHERE '+cond    
             print 'Query condition:', cond
             
             cur = mysql.connection.cursor()
@@ -299,8 +320,8 @@ def pub_dashboard():
             data = [item for item in data if (item["p_id"] in available)]
             
             return render_template('pub_dashboard.html', articles=data,\
-                                    departments=departments.keys(), my_pids=my_pids, categories=categories)       
-        
+                                    departments=departments.keys(), my_pids=my_pids, categories=categories)      
+            
             
         if request.method =='GET':
            

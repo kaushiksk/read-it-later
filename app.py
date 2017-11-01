@@ -178,6 +178,7 @@ def explore():
         cur.execute("""SELECT
                         *                    
                         FROM post P 
+                        ORDER BY counter DESC;
                         """)
         data = list(cur.fetchall())        
         

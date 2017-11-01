@@ -135,67 +135,6 @@
 
                 <!-- Search filter ends -->
 
-            
-
-          <!--       
-          <div class="panel panel-default">
-                 <a class="btn btn-block btn-index btn-md btn-inverse" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo"><strong>Custom Query</strong></a>
-                  <div id="collapseTwo" class="panel-collapse collapse {% if dept %}in{% endif %}">
-                <div class="panel-body">
-               
-                  Add the custom form here
-                   <form>            
-                   
-                   
-                
-                             
-
-                   <p><input type="submit" class="btn btn-lg btn-primary btn-block" value="Submit"></p>
-                    
-                  </form>
-                    
-                
-                  </div>
-              </div>
-               
-              
-          </div>
-          <div class="panel panel-default">
-              
-                 
-                      <a class="btn btn-block btn-index btn-md btn-inverse" data-toggle="collapse" data-parent="#accordion" href="#collapseThree"><strong>Departments</strong></a>
-                 
-            
-              <div id="collapseThree" class="panel-collapse collapse {% if dept %}in{% endif %}">
-                <div class="panel-body">
-                <form action="" method="post">
-                {% for department in departments %}
-                <input type="submit" name="department" class="btn btn-block btn-index btn-md btn-primary" value="{{ department }}">
-                {% endfor %}
-                </form>
-                  </div>
-              </div>
-          </div>
-
-          <div class="panel panel-default">
-              
-                 
-                      <a class="btn btn-block btn-index btn-md btn-inverse" data-toggle="collapse" data-parent="#accordion" href="#collapseFour"><strong>Months</strong></a>
-                 
-            
-              <div id="collapseFour" class="panel-collapse collapse {% if month %}in{% endif %}">
-                <div class="panel-body">
-                <form action="" method="post">
-                {% for month in months %}
-                <input type="submit" name="month" class="btn btn-block btn-index btn-md btn-primary" value="{{ month }}">
-                {% endfor %}
-                </form>
-                  </div>
-              </div>
-          </div>
-
-        -->
-
       </div>
   </div>
 
@@ -217,9 +156,9 @@
                 <p class="animated fadeInUp">{{ article.description.decode("utf-8") }}</p>
                 <a class="btn btn-primary" href="{{ article.url }}" target="_blank">Read Full Article <span class="glyphicon glyphicon-chevron-right"></span></a>
                 {% if article.p_id not in my_pids %}
-                <button class="btn btn-info fui-plus addme" value="" id="{{article.p_id}}" title="Add to my bookmarks">
+                <button class="btn btn-info fui-plus addme" value="" id="{{article.p_id}}" title="Add to my bookmarks"></button>
                   {% endif %}
-                
+                <span class="btn btn-warning"> Bookmarked by {{ article.counter }} </span>
                 
             </div>
         </div>
@@ -260,9 +199,9 @@
                     result["data"].forEach(function(entry){
                         htmlstring+='<div class="row animated fadeInUp"> <div class="col-md-5"> <a href="#">  <img class="img-responsive" src="' + entry.thumb + '" alt=""></a></div> <div class="col-md-7"><h3 class="animated fadeInUp" style="margin-top:0;">' + entry.title +'</h3> <p class="animated fadeInUp">' + entry.description + '</p><a class="btn btn-primary" href="' + entry.url  + '" target="_blank">Read Full Article <span class="glyphicon glyphicon-chevron-right"></span></a>';
                         if(!ids.includes(entry.p_id)){
-                            htmlstring += ' <button class="btn btn-info fui-plus addme" value="" id="'+ entry.p_id + '" title="Add to my bookmarks">';
+                            htmlstring += ' <button class="btn btn-info fui-plus addme" value="" id="'+ entry.p_id + '" title="Add to my bookmarks"></button>';
                                 }
-                        htmlstring += '</div></div><hr class="first">';
+                        htmlstring += '<span style="margin-left:1%" class="btn btn-warning"> Bookmarked by ' + entry.counter + '</span></div></div><hr class="first">';
                         });
                     $(".col-sm-8").html(htmlstring);
                 }

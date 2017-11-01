@@ -47,32 +47,23 @@ def register():
         try:
             # Create cursor
             cur = mysql.connection.cursor()
-
             # Execute query 
             cur.callproc('register', (firstName, lastName, \
-                            username, password, email, rollNo, dept))
-            
+                            username, password, email, rollNo, dept))          
 
             data = cur.fetchone()
-
             app.logger.info(data.keys()[0])
-            cur.close()
-            
+            cur.close()           
 
             mysql.connection.commit()
-
             msg = data.keys()[0] 
             # Close connection
-
-
             if msg=='success':
                 flash('You are now registered and can log in', 'success')
                 return redirect(url_for('login'))
-
             else:
                 error_msg = (" ").join(msg.split('_')[1:])
                 flash('The %s already exists'%error_msg, 'danger')
-
         except:
 
             flash(str(sys.exc_info()[0]), 'danger')
@@ -87,13 +78,10 @@ def login():
         # Get form feilds
         username = request.form['username']
         password_candidate = request.form['password']
-
-        # Create a cursor
+                # Create a cursor
         cur = mysql.connection.cursor()
-
         result = cur.execute("""SELECT * FROM users 
                                 WHERE username = %s""",[username])
-
         if result > 0:
              data = cur.fetchone()
              password = data['password']
@@ -104,20 +92,16 @@ def login():
                  session['username'] = username
                  #session['firstName'] = result['first_name']
                  #session['lastName'] = result['last_name']
-
                  flash('You are now logged in', 'success')
-
                  return redirect(url_for('dashboard'))
              else:
                  app.logger.info('PASSWORD NOT MATCHED')
                  error = 'Incorrect password'
                  return render_template('login.html', error=error)
-
         else:
             app.logger.info('INVALID USERNAME')
             error = 'Enter a valid username'
             return render_template('login.html', error=error)
-
         cur.close()
 
     return render_template('login.html')
@@ -146,7 +130,7 @@ def dashboard():
         
         if len(data)==0 :
             return render_template('dashboard.html')
-            
+
         for entry in data:
 		#entry["title"] = entry["title"][:45] + " ..."
 		    entry["shortdescription"] = parseme(entry["description"],150)
@@ -166,7 +150,7 @@ def dashboard():
                                         categories=categories, months=months, cat=cat)
             elif 'month' in request.form:
                 month = request.form['month']
-                data = [item for item in data if entry["time_added"].strftime("%B")==month]
+                data = [item for item in data if item["time_added"].strftime("%B")==month]
                 return render_template('dashboard.html', articles=data,\
                                         categories=categories, months=months, month=month)
             elif 'search' in request.form:
@@ -185,8 +169,9 @@ def dashboard():
         return redirect(url_for('login'))
         
         
-@app.route('/pub_dashboard', methods=['GET', 'POST'])
-def pub_dashboard():
+
+@app.route('/explore', methods=['GET', 'POST'])
+def explore():
     if 'logged_in' in session:
            
         cur = mysql.connection.cursor()
@@ -194,77 +179,71 @@ def pub_dashboard():
                         *                    
                         FROM post P 
                         """)
-
         data = list(cur.fetchall())        
         
         if len(data)==0 :
-            return render_template('pub_dashboard.html')
-            
+            return render_template('explore.html')
+
         for entry in data:
-		#entry["title"] = entry["title"][:45] + " ..."
-		    entry["description"] = parseme(entry["description"],150)
-		    
+            entry["description"] = parseme(entry["description"],150)
+
         cur.execute("""SELECT
                         p_id, category 
                         FROM 
                         bookmark
                         WHERE
-                        username=\'{}\'""".format(session["username"]))   	
-        
-        bookmarks = list(cur.fetchall())    
-		    
-        my_pids = [entry["p_id"] for entry in bookmarks]    	    
-	    
+                        username=\'{}\'""".format(session["username"]))
+
+        bookmarks = list(cur.fetchall())               
+        my_pids = [entry["p_id"] for entry in bookmarks]  
+
         cur.execute("""SELECT
                         p_id, category 
                         FROM 
                         bookmark""")
-
         bookmarks = list(cur.fetchall())
+
+        cur.execute("""SELECT
+                        DISTINCT(d_id)
+                        FROM users;""")
+        departments = [entry["d_id"] for entry in list(cur.fetchall())]        
         cur.close()
-        
-        #print my_pids
-        #categories = list(set(['Computer Engineering', 'Electronics & Communication', 'Chemical Engineering', 'Electrical Engineering', 'Mechanical Engineering']))
-        departments = dict([('Computer Engineering', 'CO'), ('Electronics & Communication', 'EC'), ('Chemical Engineering', 'CH'), ('Electrical Engineering', 'EE'), ('Mechanical Engineering', 'ME')])
-        #categories = list(set([entry["category"] for entry in data]))
-        #months = list(set([entry["time_added"].strftime("%B") for entry in data]))
-        
-       
-        categories = list(set([entry["category"] for entry in bookmarks]))
-        print categories
+
+        all_deps = dict([('CO', 'Computer Engineering'), ('EC', 'Electronics & Communication'),\
+              ('CH', 'Chemical Engineering'), ('EE', 'Electrical Engineering'),\
+               ('ME', 'Mechanical Engineering'), ('IT','Information Technology'),\
+               ('MN', 'Mining Engineering'), ('CV', 'Civil Engineering')])
+
+        categories = list(set([bookmark["category"] for bookmark in bookmarks]))
+        departments = [{"short" : d, "long":all_deps[d]} for d in departments]      
+
         
         if request.method == 'POST':
+
+            print request.form
                
-            cond1 = ''
-            
+            cond1 = ''            
             if request.form.get('LW'):
-                cond1+='DATEDIFF(DATE(bookmark.time_added), CURDATE())<=7 OR '
-            if request.form.get('LM'):
-                cond1+='MONTH(bookmark.time_added)=MONTH(CURRENT_DATE()) OR '
-            if request.form.get('LM'):
-                cond1+='YEAR(bookmark.time_added)=YEAR(CURRENT_DATE()) OR '
-                
+                cond1='DATEDIFF(DATE(bookmark.time_added), CURDATE())<=7 OR '
+            elif request.form.get('LM'):
+                cond1='DATEDIFF(DATE(bookmark.time_added), CURDATE())<=30 OR '
+            elif request.form.get('LM'):
+                cond1='DATEDIFF(DATE(bookmark.time_added), CURDATE())<=365 OR '                
             
             if len(cond1) != 0:    
-                cond1 = cond1[:-4]   
-             
-            print cond1        
-                
+                cond1 = cond1[:-4]             
+            print cond1               
             
-            cond2 = ''
-            
+            cond2 = ''            
             for category in categories:                      
                 if request.form.get(category):
                     cond2+='bookmark.category=\'{}\' OR '.format(category)
                     
             if len(cond2) != 0:    
                 cond2 = cond2[:-4]          
-            print cond2     
-                
-         	
-                        
-            cond3 = ''      
-                      
+            print cond2 
+
+            cond3 = ''                      
             if request.form.get('CO'):
                 cond3+='users.d_id=\'CO\' OR '
             if request.form.get('EC'):
@@ -296,7 +275,7 @@ def pub_dashboard():
 
             
             if len(cond) != 0:    
-            	cond = 'WHERE '+cond    
+                cond = 'WHERE '+cond    
             print 'Query condition:', cond
             
             cur = mysql.connection.cursor()
@@ -311,27 +290,21 @@ def pub_dashboard():
                             """.format(cond))
 
             available = list(cur.fetchall())
-            available = [item['p_id'] for item in available] 
-            
-            print available
-            
-            cur.close()
-            
+            cur.close() 
+
+            available = [item['p_id'] for item in available]            
+            print available                       
             data = [item for item in data if (item["p_id"] in available)]
+
+            return jsonify({"data":data, "my_pids": my_pids})            
             
-            return render_template('pub_dashboard.html', articles=data,\
-                                    departments=departments.keys(), my_pids=my_pids, categories=categories)      
-            
-            
-        if request.method =='GET':
-           
-            #pprint(data[0])
-            return render_template('pub_dashboard.html', articles=data,\
-                                    departments=departments.keys(), my_pids=my_pids)
+        if request.method =='GET':           
+            return render_template('explore.html', articles=data,\
+                                    departments=departments, my_pids=my_pids,\
+                                    categories=categories)
     else:
         flash('You need to be logged in to access!', 'danger')
-        return redirect(url_for('login'))
-        
+        return redirect(url_for('login'))        
 
 @app.route('/add_bookmark', methods=['GET', 'POST'])
 def add_bookmark():
@@ -359,16 +332,14 @@ def add_bookmark():
                 flash('The article has already been bookmarked', 'danger')
                 return render_template('add_bookmark.html', form=form) 
             
-            else:
-        
-                #cur = mysql.connection.cursor()      
+            else:       
+  
                 cur.execute("""SELECT 
                                 p_id 
                                 FROM post 
                                 WHERE url=\'{}\'""".format(url))                
                 data = cur.fetchall()                
-               # cur.close()
-                
+
                 if len(data)==0:  
                     article = extract_article(url)
                     app.logger.info("ARTICLE PARSED")
@@ -376,14 +347,10 @@ def add_bookmark():
                         flash('The url does not point to a valid article.', 'danger')
                         cur.close()
                         return render_template('add_bookmark.html', form=form)              
-                    #cur = mysql.connection.cursor()                   
+                
                     cur.callproc('add_post', (url, article['title'], \
                                     article['text'], article['img']))
-                    #cur.close()                    
-                    #mysql.connection.commit()
-                    
-                    
-                # cur = mysql.connection.cursor()
+
                 cur.execute("""SELECT 
                                 p_id 
                                 FROM post 

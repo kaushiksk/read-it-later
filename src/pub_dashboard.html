@@ -329,12 +329,11 @@
 
 
 
-<div class="col-sm-8" style="overflow-y:scroll; height:100vh;">
-{% if dept %}
-<h2> {{ dept }} </h2>
-{% elif month %}
-<h2> {{ month }} </h2>
+<div class="col-sm-8" style="overflow-y:scroll; height:150vh;">
+{% if err %}
+<h2>  No entries match your query </h2>
 {% endif %}
+
 
   {% for article in articles %}
   <div class="row animated fadeInUp">

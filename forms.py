@@ -3,7 +3,8 @@ from wtforms.fields.html5 import EmailField
 
 departments = [('CO', 'Computer Engineering'), ('EC', 'Electronics & Communication'),\
               ('CH', 'Chemical Engineering'), ('EE', 'Electrical Engineering'),\
-               ('ME', 'Mechanical Engineering'), ('IT'),('Information Technology')]
+               ('ME', 'Mechanical Engineering'), ('IT','Information Technology'),\
+               ('MN', 'Mining Engineering'), ('CV', 'Civil Engineering')]
 
 class RegisterForm(Form):
         firstName = StringField('First Name', [validators.Length(min=1, max=50)])

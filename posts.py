@@ -5,8 +5,8 @@ from newspaper import Article
 
 def extract_article(story_url):
     article = Article(story_url)
-    if not article.is_valid_url():
-        return "Error"
+    # if not article.is_valid_url():
+    #     return "Error"
         
     article.download()
     article.parse()

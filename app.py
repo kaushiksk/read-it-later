@@ -216,6 +216,7 @@ def explore():
                ('MN', 'Mining Engineering'), ('CV', 'Civil Engineering')])
 
         categories = list(set([bookmark["category"] for bookmark in bookmarks]))
+        deps = departments
         departments = [{"short" : d, "long":all_deps[d]} for d in departments]      
 
         
@@ -244,17 +245,10 @@ def explore():
                 cond2 = cond2[:-4]          
             print cond2 
 
-            cond3 = ''                      
-            if request.form.get('CO'):
-                cond3+='users.d_id=\'CO\' OR '
-            if request.form.get('EC'):
-                cond3+='users.d_id=\'EC\' OR '
-            if request.form.get('CH'):
-                cond3+='users.d_id=\'CH\' OR '
-            if request.form.get('EE'):
-                cond3+='users.d_id=\'EE\' OR '
-            if request.form.get('ME'):
-                cond3+='users.d_id=\'ME\' OR '   
+            cond3 = ''   
+            for d in deps:
+               if request.form.get(d):
+                cond3+='users.d_id=\'{}\' OR '.format(d)
                 
             if len(cond3) != 0:    
                 cond3 = cond3[:-4]

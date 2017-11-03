@@ -2,7 +2,7 @@
 
 This folder consists of all the sql commands, procedures and triggers that were used to create the database required for this app. 
 
-For the ease of migration the mysqldump of the database at a particular state has been saved and made available here as the project.gz file. To automatically retain a the database with some intermediate entries run the following commands from your terminal.
+For the ease of migration the mysqldump of the database at a particular state has been saved and made available here as the `project.gz` file. To automatically load the database from the mysqldump with some preloaded entries, run the following commands from your terminal.
 
 `$ mysqladmin -p create project`
 

@@ -25,6 +25,6 @@ Inside your mysql shell, run the following.
 
 `mysql> source delete_bm_trigger.sql`
 
-If you instead wish to start with empty tables, run
+If you instead wish to start with empty tables, run the following first
 
 `mysql> source create_tables.sql`

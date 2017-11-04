@@ -13,15 +13,24 @@ from utils import parseme
 
 app = Flask(__name__)
 
-app.config['MYSQL_HOST'] = '138.197.183.138'
-app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = 'dbmsproject'
+# Enter this information 
+HOST = "localhost"
+USERNAME ="root"
+PASSWORD = "mysqlroot"
+
+app.config['MYSQL_HOST'] = HOST
+app.config['MYSQL_USER'] = USERNAME
+app.config['MYSQL_PASSWORD'] = PASSWORD
 app.config['MYSQL_DB'] = 'project'
 app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
 
 #init MYSQL_DB
 mysql = MySQL(app)
 
+all_deps = dict([('CO', 'Computer Engineering'), ('EC', 'Electronics & Communication'),\
+      ('CH', 'Chemical Engineering'), ('EE', 'Electrical Engineering'),\
+       ('ME', 'Mechanical Engineering'), ('IT','Information Technology'),\
+       ('MN', 'Mining Engineering'), ('CV', 'Civil Engineering')])
 
 @app.route('/')
 def home():
@@ -132,8 +141,7 @@ def dashboard():
             return render_template('dashboard.html')
 
         for entry in data:
-		#entry["title"] = entry["title"][:45] + " ..."
-		    entry["shortdescription"] = parseme(entry["description"],150)
+            entry["shortdescription"] = parseme(entry["description"],150)
         
         categories = list(set([entry["category"] for entry in data]))
         months = list(set([entry["time_added"].strftime("%B") for entry in data]))
@@ -161,7 +169,7 @@ def dashboard():
                                         categories=categories, months=months, query=query)
         elif request.method =='GET':
             data = [item for item in data if item["read_status"]==0]
-            pprint(data[0])
+            #pprint(data[0])
             return render_template('dashboard.html', articles=data,\
                                     categories=categories, months=months,)
     else:
@@ -209,11 +217,6 @@ def explore():
                         FROM users;""")
         departments = [entry["d_id"] for entry in list(cur.fetchall())]        
         cur.close()
-
-        all_deps = dict([('CO', 'Computer Engineering'), ('EC', 'Electronics & Communication'),\
-              ('CH', 'Chemical Engineering'), ('EE', 'Electrical Engineering'),\
-               ('ME', 'Mechanical Engineering'), ('IT','Information Technology'),\
-               ('MN', 'Mining Engineering'), ('CV', 'Civil Engineering')])
 
         categories = list(set([bookmark["category"] for bookmark in bookmarks]))
         deps = departments
@@ -432,7 +435,7 @@ def getpiedata ():
                     category""".format(session["username"]))
     data = cur.fetchall()
     cur.close()
-    pprint(data)
+    #pprint(data)
     #print json.loads(request.form["b_id"])
     return jsonify({"data":data}) 
 

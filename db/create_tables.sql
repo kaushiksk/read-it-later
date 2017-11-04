@@ -33,4 +33,18 @@ ALTER TABLE bookmark ADD b_id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KE
 ALTER TABLE users ADD FOREIGN KEY ('username') REFERENCES users('username');
 ALTER TABLE users ADD FOREIGN KEY ('p_id') REFERENCES post('p_id');
 
-INSERT INTO department(d_id,d_name) VALUES('CO','Computer Science & Engineering'),('EC','Electronics & Communication Engineering'),('EE','Electrical & Electronics Engineering'),('ME','Mechanical Engineering'),('CH','Chemical Engineering'),('MN','Mining Engineering'),('MT','Metallurgical Engineering'),('IT','Information Technology'),('CV','Civil Engineering');
+INSERT INTO department
+			(
+				d_id,
+				d_name
+			)
+			VALUES
+			('CO','Computer Science & Engineering'),
+			('EC','Electronics & Communication Engineering'),
+			('EE','Electrical & Electronics Engineering'),
+			('ME','Mechanical Engineering'),
+			('CH','Chemical Engineering'),
+			('MN','Mining Engineering'),
+			('MT','Metallurgical Engineering'),
+			('IT','Information Technology'),
+			('CV','Civil Engineering');

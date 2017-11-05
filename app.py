@@ -83,6 +83,8 @@ def register():
 # User login
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    if 'logged_in' in session:
+        return redirect(url_for('dashboard'))
     if request.method == 'POST':
         # Get form feilds
         username = request.form['username']
@@ -476,4 +478,4 @@ def logout():
 if __name__ =="__main__":
     app.secret_key = 'secret123'
     app.config['TEMPLATES_AUTO_RELOAD'] = True
-    app.run(debug=True)
+    app.run(host="0.0.0.0", debug=True, threaded=True)

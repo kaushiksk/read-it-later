@@ -1,5 +1,54 @@
-# read-it-later
+# read-it-ater
 A news aggregator and read-it-later web app built using flask and mysql
+
+## Directory Structure 
+```
+├── db
+├── screenshots
+├── static
+│   ├── css
+│   ├── fonts
+│   ├── img
+│   └── js
+├── templates
+│   └── includes
+├── app.py
+├── forms.py
+├── LICENSE
+├── posts.py
+├── README.md
+├── requirements.txt
+└── utils.py
+
+```
+
+|folder|contents|
+|-----|--------|
+|db| queires, procedures and triggers|
+|static| css, js, and other static files for the web app|
+|screenshots| screenshots of various pages on the web app|
+|templates| HTML templates used in the web app|
+
+---
+|script|contents|
+|-----|--------|
+|app.py| main server code with all the routes|
+|forms.py| forms defined using WTForms|
+|posts.py| article parsing code|
+|utils.py| additional functions|
+
+## Installation
+
+`$ git clone git@github.com:kaushiksk/read-it-later.git && cd read-it-later`
+
+`$ pip install -r requirements.txt`
+
+Now run all the scripts in the `db/` folder.
+
+Change the the `USERNAME`, `PASSWORD` variables in `app.py` to your mysql
+username and password.
+
+Start the server by running the following in your terminal: `$ python app.py`
 
 ## Development Notes
 

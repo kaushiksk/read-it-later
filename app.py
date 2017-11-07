@@ -1,3 +1,12 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+# File              : app.py
+# Author            : Kaushik S Kalmady, Siddharth V
+# Date              : 07.11.2017
+# Last Modified Date: 07.11.2017
+# Last Modified By  : Kaushik S Kalmady
+
+
 from flask import Flask, render_template, flash, redirect, url_for, session, request, logging, jsonify
 import random
 import sys
@@ -13,9 +22,9 @@ from utils import parseme
 
 app = Flask(__name__)
 
-# Enter this information 
+# Enter this information
 HOST = "localhost"
-USERNAME ="root"
+USERNAME ="root" # change to your username and password
 PASSWORD = "mysqlroot"
 
 app.config['MYSQL_HOST'] = HOST
@@ -36,7 +45,7 @@ all_deps = dict([('CO', 'Computer Engineering'), ('EC', 'Electronics & Communica
 def home():
     if 'logged_in' in session:
         return redirect(url_for('dashboard'))
-    
+
     return render_template('index.html')
 
 # User signup
@@ -56,16 +65,16 @@ def register():
         try:
             # Create cursor
             cur = mysql.connection.cursor()
-            # Execute query 
+            # Execute query
             cur.callproc('register', (firstName, lastName, \
-                            username, password, email, rollNo, dept))          
+                            username, password, email, rollNo, dept))
 
             data = cur.fetchone()
             app.logger.info(data.keys()[0])
-            cur.close()           
+            cur.close()
 
             mysql.connection.commit()
-            msg = data.keys()[0] 
+            msg = data.keys()[0]
             # Close connection
             if msg=='success':
                 flash('You are now registered and can log in', 'success')
@@ -91,7 +100,7 @@ def login():
         password_candidate = request.form['password']
                 # Create a cursor
         cur = mysql.connection.cursor()
-        result = cur.execute("""SELECT * FROM users 
+        result = cur.execute("""SELECT * FROM users
                                 WHERE username = %s""",[username])
         if result > 0:
              data = cur.fetchone()
@@ -117,34 +126,35 @@ def login():
 
     return render_template('login.html')
 
+#Dashboard routes
 @app.route('/dashboard', methods=['GET', 'POST'])
 def dashboard():
     if 'logged_in' in session:
         cur = mysql.connection.cursor()
         cur.execute("""SELECT
                         title,
-                        url, 
+                        url,
                         description,
                         thumb,
                         P.p_id,
-                        b_id, 
-                        category, 
-                        read_status+0 as read_status, 
-                        time_added 
-                        FROM bookmark B JOIN post P 
-                        ON B.p_id=P.p_id 
+                        b_id,
+                        category,
+                        read_status+0 as read_status,
+                        time_added
+                        FROM bookmark B JOIN post P
+                        ON B.p_id=P.p_id
                         WHERE username=\'{}\'
                         ORDER BY time_added DESC;""".format(session["username"]))
 
         data = list(cur.fetchall())
         cur.close()
-        
+
         if len(data)==0 :
             return render_template('dashboard.html')
 
         for entry in data:
             entry["shortdescription"] = parseme(entry["description"],150)
-        
+
         categories = list(set([entry["category"] for entry in data]))
         months = list(set([entry["time_added"].strftime("%B") for entry in data]))
         if request.method == 'POST':
@@ -177,21 +187,21 @@ def dashboard():
     else:
         flash('You need to be logged in to access!', 'danger')
         return redirect(url_for('login'))
-        
-        
 
+
+# Explore page routes
 @app.route('/explore', methods=['GET', 'POST'])
 def explore():
     if 'logged_in' in session:
-           
+
         cur = mysql.connection.cursor()
         cur.execute("""SELECT
-                        *                    
-                        FROM post P 
+                        *
+                        FROM post P
                         ORDER BY counter DESC;
                         """)
-        data = list(cur.fetchall())        
-        
+        data = list(cur.fetchall())
+
         if len(data)==0 :
             return render_template('explore.html')
 
@@ -199,112 +209,112 @@ def explore():
             entry["description"] = parseme(entry["description"],150)
 
         cur.execute("""SELECT
-                        p_id, category 
-                        FROM 
+                        p_id, category
+                        FROM
                         bookmark
                         WHERE
                         username=\'{}\'""".format(session["username"]))
 
-        bookmarks = list(cur.fetchall())               
-        my_pids = [entry["p_id"] for entry in bookmarks]  
+        bookmarks = list(cur.fetchall())
+        my_pids = [entry["p_id"] for entry in bookmarks]
 
         cur.execute("""SELECT
-                        p_id, category 
-                        FROM 
+                        p_id, category
+                        FROM
                         bookmark""")
         bookmarks = list(cur.fetchall())
 
         cur.execute("""SELECT
                         DISTINCT(d_id)
                         FROM users;""")
-        departments = [entry["d_id"] for entry in list(cur.fetchall())]        
+        departments = [entry["d_id"] for entry in list(cur.fetchall())]
         cur.close()
 
         categories = list(set([bookmark["category"] for bookmark in bookmarks]))
         deps = departments
-        departments = [{"short" : d, "long":all_deps[d]} for d in departments]      
+        departments = [{"short" : d, "long":all_deps[d]} for d in departments]
 
-        
+
         if request.method == 'POST':
 
             print request.form
-               
-            cond1 = ''            
+
+            cond1 = ''
             if request.form.get('LW'):
                 cond1='DATEDIFF(DATE(bookmark.time_added), CURDATE())<=7 OR '
             elif request.form.get('LM'):
                 cond1='DATEDIFF(DATE(bookmark.time_added), CURDATE())<=30 OR '
             elif request.form.get('LM'):
-                cond1='DATEDIFF(DATE(bookmark.time_added), CURDATE())<=365 OR '                
-            
-            if len(cond1) != 0:    
-                cond1 = cond1[:-4]             
-            print cond1               
-            
-            cond2 = ''            
-            for category in categories:                      
+                cond1='DATEDIFF(DATE(bookmark.time_added), CURDATE())<=365 OR '
+
+            if len(cond1) != 0:
+                cond1 = cond1[:-4]
+            print cond1
+
+            cond2 = ''
+            for category in categories:
                 if request.form.get(category):
                     cond2+='bookmark.category=\'{}\' OR '.format(category)
-                    
-            if len(cond2) != 0:    
-                cond2 = cond2[:-4]          
-            print cond2 
 
-            cond3 = ''   
+            if len(cond2) != 0:
+                cond2 = cond2[:-4]
+            print cond2
+
+            cond3 = ''
             for d in deps:
                if request.form.get(d):
                 cond3+='users.d_id=\'{}\' OR '.format(d)
-                
-            if len(cond3) != 0:    
+
+            if len(cond3) != 0:
                 cond3 = cond3[:-4]
-            print cond3      
-                
-            cond = ''    
-            if len(cond1) != 0: 
+            print cond3
+
+            cond = ''
+            if len(cond1) != 0:
                 cond += cond1
-                
-            if len(cond)!=0 and len(cond2) != 0: 
+
+            if len(cond)!=0 and len(cond2) != 0:
                 cond = cond + ' AND ' + cond2
             elif len(cond)==0 and len(cond2) != 0:
                 cond += cond2
-                                
-            if len(cond)!=0 and len(cond3) != 0: 
+
+            if len(cond)!=0 and len(cond3) != 0:
                 cond = cond + ' AND ' + cond3
             elif len(cond)==0 and len(cond3) != 0:
                 cond += cond3
 
-            
-            if len(cond) != 0:    
-                cond = 'WHERE '+cond    
+
+            if len(cond) != 0:
+                cond = 'WHERE '+cond
             print 'Query condition:', cond
-            
+
             cur = mysql.connection.cursor()
-            cur.execute("""SELECT 
-                            bookmark.p_id 
-                            FROM users 
-                            INNER JOIN 
-                            bookmark 
-                            ON 
-                            users.username=bookmark.username                             
+            cur.execute("""SELECT
+                            bookmark.p_id
+                            FROM users
+                            INNER JOIN
+                            bookmark
+                            ON
+                            users.username=bookmark.username
                             {};
                             """.format(cond))
 
             available = list(cur.fetchall())
-            cur.close() 
+            cur.close()
 
-            available = [item['p_id'] for item in available]            
-            print available                       
+            available = [item['p_id'] for item in available]
+            print available
             data = [item for item in data if (item["p_id"] in available)]
 
-            return jsonify({"data":data, "my_pids": my_pids})            
-            
-        if request.method =='GET':           
+            return jsonify({"data":data, "my_pids": my_pids})
+
+        if request.method =='GET':
             return render_template('explore.html', articles=data,\
                                     departments=departments, my_pids=my_pids,\
                                     categories=categories)
     else:
         flash('You need to be logged in to access!', 'danger')
-        return redirect(url_for('login'))        
+        return redirect(url_for('login'))
 
 @app.route('/add_bookmark', methods=['GET', 'POST'])
 def add_bookmark():
@@ -312,66 +322,66 @@ def add_bookmark():
     if  request.method == 'POST' and form.validate():
         url = form.url.data
         cat = form.cat.data
-        
-        try: 
+
+        try:
             cur = mysql.connection.cursor()
-            cur.execute("""SELECT 
-                            p_id 
-                            FROM bookmark 
-                            WHERE username=\'{}\' 
-                            AND 
-                            p_id=(SELECT 
-                                    p_id 
-                                    FROM post 
+            cur.execute("""SELECT
+                            p_id
+                            FROM bookmark
+                            WHERE username=\'{}\'
+                            AND
+                            p_id=(SELECT
+                                    p_id
+                                    FROM post
                                     WHERE url=\'{}\')""".format(session['username'], url))
-            
-            data = cur.fetchall()            
+
+            data = cur.fetchall()
             #cur.close()
-            
+
             if len(data)>0:
                 flash('The article has already been bookmarked', 'danger')
-                return render_template('add_bookmark.html', form=form) 
-            
-            else:       
-  
-                cur.execute("""SELECT 
-                                p_id 
-                                FROM post 
-                                WHERE url=\'{}\'""".format(url))                
-                data = cur.fetchall()                
+                return render_template('add_bookmark.html', form=form)
 
-                if len(data)==0:  
+            else:
+
+                cur.execute("""SELECT
+                                p_id
+                                FROM post
+                                WHERE url=\'{}\'""".format(url))
+                data = cur.fetchall()
+
+                if len(data)==0:
                     article = extract_article(url)
                     app.logger.info("ARTICLE PARSED")
                     if article == "Error":
                         flash('The url does not point to a valid article.', 'danger')
                         cur.close()
-                        return render_template('add_bookmark.html', form=form)              
-                
+                        return render_template('add_bookmark.html', form=form)
+
                     cur.callproc('add_post', (url, article['title'], \
                                     article['text'], article['img']))
 
-                cur.execute("""SELECT 
-                                p_id 
-                                FROM post 
-                                WHERE url=\'{}\'""".format(url))                
-                data = cur.fetchall()                
+                cur.execute("""SELECT
+                                p_id
+                                FROM post
+                                WHERE url=\'{}\'""".format(url))
+                data = cur.fetchall()
                 cur.callproc('add_bookmark', (session['username'], \
-                                data[0]['p_id'], cat))                
+                                data[0]['p_id'], cat))
                 cur.close()
                 mysql.connection.commit()
-                
+
                 flash('The article has been successfully bookmarked', 'success')
-            
+
             return redirect(url_for('dashboard'))
-            
-        
+
+
         except:
 
             flash(str(sys.exc_info()[0]), 'danger')
-            return render_template('add_bookmark.html', form=form) 
-                  
-    return render_template('add_bookmark.html', form=form)        
+            return render_template('add_bookmark.html', form=form)
+
+    return render_template('add_bookmark.html', form=form)
 
 @app.route('/myaccount', methods=['GET'])
 def myaccount():
@@ -383,18 +393,18 @@ def myaccount():
                         d_name,
                         email,
                         roll_no,
-                        username                    
+                        username
                         FROM users U JOIN department D
                         ON U.d_id=D.d_id
-                        WHERE username=\'{}\' 
+                        WHERE username=\'{}\'
                         """.format(session["username"]))
 
         myuser = list(cur.fetchall())
 
         cur.execute("""SELECT
-                        read_status+0 as read_status                   
+                        read_status+0 as read_status
                         FROM bookmark
-                        WHERE username=\'{}\' 
+                        WHERE username=\'{}\'
                         """.format(session["username"]))
 
         mybookmarks = list(cur.fetchall())
@@ -405,30 +415,31 @@ def myaccount():
                  "archived": unread,
                  }
         cur.close()
-        #pprint(myuser, stats)        
+        #pprint(myuser, stats)
         return render_template('myaccount.html', myuser=myuser[0], stats=stats)
-        
+
     else:
         flash('You need to be logged in to access!', 'danger')
         return redirect(url_for('login'))
 
-@app.route('/archive-toggle', methods=['POST'])	
+@app.route('/archive-toggle', methods=['POST'])
 def archive():
     b_id = request.json["b_id"]
     cur = mysql.connection.cursor()
-    cur.execute("""UPDATE 
-                    bookmark 
-                    SET read_status = !read_status 
+    cur.execute("""UPDATE
+                    bookmark
+                    SET read_status = !read_status
                     WHERE b_id=%s"""%b_id)
     cur.close()
     mysql.connection.commit()
     #print json.loads(request.form["b_id"])
-    return jsonify({"data":"pass"}) 
+    return jsonify({"data":"pass"})
 
-@app.route('/get-pie-data', methods=['GET']) 
+# Data request for doughnut chart comes here
+@app.route('/get-pie-data', methods=['GET'])
 def getpiedata ():
     cur = mysql.connection.cursor()
-    cur.execute("""SELECT 
+    cur.execute("""SELECT
                     category,
                     COUNT(*) as count
                     FROM bookmark
@@ -439,33 +450,34 @@ def getpiedata ():
     cur.close()
     #pprint(data)
     #print json.loads(request.form["b_id"])
-    return jsonify({"data":data}) 
+    return jsonify({"data":data})
 
-
-@app.route('/add-mybookmark', methods=['POST'])	
+# Route for adding bookmark from the Explore page
+@app.route('/add-mybookmark', methods=['POST'])
 def addmybookmark():
     p_id = request.json["p_id"]
     category = request.json["category"]
     cur = mysql.connection.cursor()
     cur.callproc('add_bookmark', (session['username'], \
-                                p_id, category)) 
+                                p_id, category))
     cur.close()
     mysql.connection.commit()
     #print json.loads(request.form["b_id"])
     print p_id, category
-    return jsonify({"data":"pass"})   
-    
-@app.route('/delete-bookmark', methods=['POST']) 
+    return jsonify({"data":"pass"})
+
+# Delete a bookmark
+@app.route('/delete-bookmark', methods=['POST'])
 def delete():
     b_id, p_id = request.json["b_id-p_id"].split("-")
     cur = mysql.connection.cursor()
-    cur.execute("""DELETE 
-                    FROM bookmark                      
+    cur.execute("""DELETE
+                    FROM bookmark
                     WHERE b_id=%s"""%b_id)
     cur.close()
     mysql.connection.commit()
     print b_id, p_id
-    return jsonify({"data":"pass"})  
+    return jsonify({"data":"pass"})
 
 @app.route('/logout')
 def logout():

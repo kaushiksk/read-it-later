@@ -1,0 +1,352 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+
+
+<div class="row">
+<!--style="position:fixed;  float:none; display: inline-block;-->
+      <div class="col-sm-4" >
+     
+       
+  <div class="panel-group" id="accordion">
+          
+          <!-- Search filter starts -->  
+
+                   <div class="panel-group">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">
+                                <a data-toggle="collapse" href="#filter1">
+                                    Filter
+                                </a>
+                                <a class="pull-right" data-toggle="collapse" href="#filter1">
+                                    <span class="glyphicon glyphicon-filter"></span>
+                                </a>
+                            </h4>
+                        </div>
+                        <div id="filter1" class="panel-collapse collapse in">
+                            <div class="panel-body">
+                                <div class="filter-setting">
+                                <form class="form">
+                                    
+                               <span><strong>Date</strong></span> 
+                                    <a class="pull-right collapsed-icon-toggle" href="#coll-0" data-toggle="collapse">
+                                        <span class="glyphicon glyphicon-plus on-closed"></span>
+                                        <span class="glyphicon glyphicon-minus on-opened"></span>
+                                        
+                                    </a>
+                                    <br/>
+                                    <div id="coll-0" class="collapse in">
+                                        <div class="padding-v-xs" data-toggle="buttons">
+                                            <label class="btn btn-default btn-xs ico">
+                                                <input type="checkbox" name="LW"
+                                                   value="true" autocomplete="off" />
+                                                <span class="icon glyphicon glyphicon-ok"></span>
+                                            </label>
+                                            <span>Last Week</span>
+                                        </div>
+                                        <div class="padding-v-xs" data-toggle="buttons">
+                                            <label class="btn btn-default btn-xs ico">
+                                                <input type="checkbox" name="LM"
+                                                   value="true" autocomplete="off"/>
+                                                <span class="icon glyphicon glyphicon-ok"></span>
+                                            </label>
+                                            <span>Last Month</span>
+                                        </div>  
+                                        <div class="padding-v-xs" data-toggle="buttons">
+                                            <label class="btn btn-default btn-xs ico">
+                                                <input type="checkbox" name="LY"
+                                                   value="true" autocomplete="off"/>
+                                                <span class="icon glyphicon glyphicon-ok"></span>
+                                            </label>
+                                            <span>Last Year</span>
+                                        </div>          
+                                        <div class="padding-v-xs" data-toggle="buttons">
+                                            <label class="btn btn-default btn-xs ico">
+                                                <input type="checkbox" name="AT"
+                                                   value="true" autocomplete="off"/>
+                                                <span class="icon glyphicon glyphicon-ok"></span>
+                                            </label>
+                                            <span>All time</span>
+                                        </div>                                
+                                    </div>
+
+                                                                       
+                                    <hr class="line"/>
+
+                                    <span><strong>Category</strong></span> 
+                                    <a class="pull-right collapsed-icon-toggle" href="#coll-1" data-toggle="collapse">
+                                        <span class="glyphicon glyphicon-plus on-closed"></span>
+                                        <span class="glyphicon glyphicon-minus on-opened"></span>
+                                        
+                                    </a>
+                                    <br/>
+                                    <div id="coll-1" class="scroll-v-250px collapse in">
+                                    {% for category in categories %}
+                                        <div class="padding-v-xs" data-toggle="buttons">
+                                            <label class="btn btn-default btn-xs ico">
+                                                <input type="checkbox" name="{{ category }}"
+                                                   value="true" autocomplete="off" />
+                                                <span class="icon glyphicon glyphicon-ok"></span>
+                                            </label>
+                                            <span>{{ category }}</span>
+                                        </div>
+                                    {% endfor %}
+                                         
+                                    </div>
+
+                                        
+
+                                    <hr class="line"/>
+
+                                    <span><strong>Department</strong></span>  
+                                    <a class="pull-right collapsed-icon-toggle" href="#coll-2" data-toggle="collapse">
+                                        <span class="glyphicon glyphicon-minus on-opened"></span>
+                                        <span class="glyphicon glyphicon-plus on-closed"></span>
+                                    </a>
+                                    
+                                    <br/>
+
+                                    <div id="coll-2" class="scroll-v-250px collapse in">                                     
+                                    {% for entry in departments %}
+                                        <div class="padding-v-xs" data-toggle="buttons">
+                                        <label class="btn btn-default btn-xs ico">
+                                            <input type="checkbox" name="{{ entry.short }}"
+                                                   value="true" autocomplete="off" />
+                                            <span class="icon glyphicon glyphicon-ok"></span>
+                                        </label>
+                                            <span>{{ entry.long }}</span>
+                                        </div>
+                                        {% endfor %}
+                                        
+                                    </div>
+
+                                    <hr class="line"/>
+                                    
+                                    <button type="submit" class="btn btn-block btn-success" value="Submit">
+                                        <span class="glyphicon glyphicon-search"></span>
+                                    </button>
+                                </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Search filter ends -->
+
+            
+
+          <!--       
+          <div class="panel panel-default">
+                 <a class="btn btn-block btn-index btn-md btn-inverse" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo"><strong>Custom Query</strong></a>
+                  <div id="collapseTwo" class="panel-collapse collapse {% if dept %}in{% endif %}">
+                <div class="panel-body">
+               
+                  Add the custom form here
+                   <form>            
+                   
+                   
+                
+                             
+
+                   <p><input type="submit" class="btn btn-lg btn-primary btn-block" value="Submit"></p>
+                    
+                  </form>
+                    
+                
+                  </div>
+              </div>
+               
+              
+          </div>
+          <div class="panel panel-default">
+              
+                 
+                      <a class="btn btn-block btn-index btn-md btn-inverse" data-toggle="collapse" data-parent="#accordion" href="#collapseThree"><strong>Departments</strong></a>
+                 
+            
+              <div id="collapseThree" class="panel-collapse collapse {% if dept %}in{% endif %}">
+                <div class="panel-body">
+                <form action="" method="post">
+                {% for department in departments %}
+                <input type="submit" name="department" class="btn btn-block btn-index btn-md btn-primary" value="{{ department }}">
+                {% endfor %}
+                </form>
+                  </div>
+              </div>
+          </div>
+
+          <div class="panel panel-default">
+              
+                 
+                      <a class="btn btn-block btn-index btn-md btn-inverse" data-toggle="collapse" data-parent="#accordion" href="#collapseFour"><strong>Months</strong></a>
+                 
+            
+              <div id="collapseFour" class="panel-collapse collapse {% if month %}in{% endif %}">
+                <div class="panel-body">
+                <form action="" method="post">
+                {% for month in months %}
+                <input type="submit" name="month" class="btn btn-block btn-index btn-md btn-primary" value="{{ month }}">
+                {% endfor %}
+                </form>
+                  </div>
+              </div>
+          </div>
+
+        -->
+
+      </div>
+  </div>
+
+
+
+<div class="col-sm-8" style="overflow-y:scroll; height:150vh;">
+
+
+  {% for article in articles %}
+  <div class="row animated fadeInUp">
+            <div class="col-md-5">
+                <a href="#">
+                    <img class="img-responsive" src="{{article.thumb}}" alt="">
+                    <!-- <h6 class="cat"><strong>#{{ article.category}}</strong></h6	> -->
+                </a>
+            </div>
+            <div class="col-md-7">
+                <h3 class="animated fadeInUp" style="margin-top:0;">{{ article.title }}</h3>
+                <p class="animated fadeInUp">{{ article.description.decode("utf-8") }}</p>
+                <a class="btn btn-primary" href="{{ article.url }}" target="_blank">Read Full Article <span class="glyphicon glyphicon-chevron-right"></span></a>
+                {% if article.p_id not in my_pids %}
+                <button class="btn btn-info fui-plus addme" value="" id="{{article.p_id}}" title="Add to my bookmarks">
+                  {% endif %}
+                
+                
+            </div>
+        </div>
+        <hr class="first"><hr class="second">
+ 
+    {% endfor %}
+
+
+</div>
+</div>
+
+{% endblock %}
+
+{% block script %}
+<script type="text/javascript">
+
+
+    
+        // click on button submit
+        $(".form").on('submit', function(event){
+            // send ajax
+            event.preventDefault();
+            $.ajax({
+                url: '/test_pub', // url where to submit the request
+                type : "POST", // type of action POST || GET
+                dataType : 'json', // data type
+                data : $(".form").serialize(), // post data || get data
+                success : function(result) {
+                    // you can see the result from the console
+                    // tab of the developer tools
+                    ids = result["my_pids"];
+                    $(".col-sm-8").empty();
+                    var htmlstring = '';
+                    if(result["data"].length == 0){
+                        $(".col-sm-8").html('<h2>  No entries match your query </h2>');
+                    }
+                    else{
+                    result["data"].forEach(function(entry){
+                        htmlstring+='<div class="row animated fadeInUp"> <div class="col-md-5"> <a href="#">  <img class="img-responsive" src="' + entry.thumb + '" alt=""></a></div> <div class="col-md-7"><h3 class="animated fadeInUp" style="margin-top:0;">' + entry.title +'</h3> <p class="animated fadeInUp">' + entry.description + '</p><a class="btn btn-primary" href="' + entry.url  + '" target="_blank">Read Full Article <span class="glyphicon glyphicon-chevron-right"></span></a>';
+                        if(!ids.includes(entry.p_id)){
+                            htmlstring += ' <button class="btn btn-info fui-plus addme" value="" id="'+ entry.p_id + '" title="Add to my bookmarks">';
+                                }
+                        htmlstring += '</div></div><hr class="first">';
+                        });
+                    $(".col-sm-8").html(htmlstring);
+                }
+                },
+            });
+        });
+
+</script>
+<script type="text/javascript">
+
+
+	$(document).on('click', '.addme', function(){
+	var id = this.id;
+	var mytitle, mycontent;
+
+	$.confirm({
+    title: "Bookmark this!",
+    content: "url:{{ url_for('static',filename='category-form.html') }}",
+	draggable: true,
+	icon:'fa fa-plus',
+	backgroundDismiss: true,
+	theme:"modern",
+	type:"blue",
+    buttons: {
+        add: {
+        btnClass: 'btn-blue',
+   		action: function () {
+        var input = this.$content.find('select');
+        	$.ajax({
+			  type: "POST",
+			  contentType: "application/json; charset=utf-8",
+			  url: "/add-mybookmark",
+			  data: JSON.stringify({ "p_id" : id, "category":input.find( "option:selected" ).text()}),
+			  success: function (stuff) {
+              $("#"+id).removeClass('addme');
+	        		$("#"+id).removeClass('fui-plus');
+              $("#"+id).addClass('fui-check');
+		        	$("#"+id).attr("title", "");
+              $("#"+id).fadeOut(2000);
+              
+		        	$.alert({
+       				 title: 'Bookmark successfully added!',
+        			 content: 'The bookmark is now on your dashboard!',
+                     icon:'fa fa-check',
+        			 theme: "modern",
+        			 type:"green"
+        			     });
+		        
+		        },
+			  dataType: "json"
+			});
+        	
+     
+            
+        }
+    },
+        cancel: function () {
+                $.alert({
+       				 title: 'Cancelled!',
+        			 content: 'Bookmark not added',
+        			 theme: "modern",
+        			 type:"green"
+    });
+        }
+    }
+});
+		
+	});
+
+
+</script>
+
+{% endblock %}
+{% block style %}
+<style>
+.cat{
+	position:absolute; 
+	bottom:2%; 
+	left:1%; 
+	background-color: #48c9b0; 
+	color:#ffffff; 
+	text-transform: uppercase;
+	padding: 5px 5px;
+	border-radius: 5%;
+}
+</style>
+{% endblock %}

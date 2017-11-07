@@ -1,3 +1,11 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+# File              : forms.py
+# Author            : Siddharth V
+# Date              : 07.11.2017
+# Last Modified Date: 07.11.2017
+# Last Modified By  : Siddharth V
+
 from wtforms import Form, StringField, TextAreaField, PasswordField, SelectField, validators
 from wtforms.fields.html5 import EmailField
 
@@ -18,7 +26,7 @@ class RegisterForm(Form):
             validators.EqualTo('confirm', message='Passwords do not match')
             ])
         confirm = PasswordField('Confirm Password')
-        
+
 
 categories = [('Academia', 'Academia'), ('Entertainment', 'Entertainment'),\
              ('Sports', 'Sports'), ('Music', 'Music'), ('Art', 'Art'),\
@@ -26,6 +34,6 @@ categories = [('Academia', 'Academia'), ('Entertainment', 'Entertainment'),\
              ('Film','Film'),('India','India'),('History','History'),('Other','Other')]
 
 class PostForm(Form):
-        url = StringField('URL of the article', [validators.Length(min=1, max=200)])       
+        url = StringField('URL of the article', [validators.Length(min=1, max=200)])
         cat = SelectField('Category', choices=categories)
-        
+

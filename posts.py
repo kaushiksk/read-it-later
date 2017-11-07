@@ -1,13 +1,26 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+# File              : posts.py
+# Author            : Kaushik S Kalmady
+# Date              : 07.11.2017
+# Last Modified Date: 07.11.2017
+# Last Modified By  : Kaushik S Kalmady
+
 from newspaper import Article
 # from wordcloud import WordCloud
 
 # keyword_freq = {}
 
 def extract_article(story_url):
+    """extract_article
+
+    :param story_url: URL to the article to be parsed
+    """
+    #
     article = Article(story_url)
     # if not article.is_valid_url():
     #     return "Error"
-        
+
     article.download()
     article.parse()
     #article.nlp()
@@ -28,7 +41,7 @@ def extract_article(story_url):
     }
 
 # def gen_worldcloud():
-	
+
 # 	wordcloud = WordCloud().generate_from_frequencies(keyword_freq)
 # 	image = wordcloud.to_image()
 # 	image.save("wodcloud.png")

@@ -1,5 +1,6 @@
 # read-it-ater
-A news aggregator and read-it-later web app built using flask and mysql
+A news aggregator and read-it-later web app built using flask and mysql.
+This web app is live at: http://174.138.56.33:5000/
 
 ## Directory Structure 
 ```

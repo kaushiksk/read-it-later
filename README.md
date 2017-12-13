@@ -3,6 +3,8 @@ A news aggregator and read-it-later web app built using flask and mysql.
 The idea is inspired from this
 [post](https://github.com/shekhargulati/52-technologies-in-2016/tree/master/16-newspaper)
 
+*This web app is live at: http://174.138.56.33:5000/*
+
 ## Directory Structure 
 ```
 ├── db

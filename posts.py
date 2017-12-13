@@ -3,7 +3,7 @@
 # File              : posts.py
 # Author            : Kaushik S Kalmady
 # Date              : 07.11.2017
-# Last Modified Date: 07.11.2017
+# Last Modified Date: 08.11.2017
 # Last Modified By  : Kaushik S Kalmady
 
 from newspaper import Article
@@ -43,6 +43,9 @@ def extract_article(story_url):
 # def gen_worldcloud():
 
 # 	wordcloud = WordCloud().generate_from_frequencies(keyword_freq)
+#
+#
+#
 # 	image = wordcloud.to_image()
 # 	image.save("wodcloud.png")
 

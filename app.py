@@ -1,22 +1,42 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+# Copyright (c) 2017 Kaushik S Kalmady
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in
+# all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+#
 # File              : app.py
 # Author            : Kaushik S Kalmady, Siddharth V
 # Date              : 07.11.2017
-# Last Modified Date: 07.11.2017
+# Last Modified Date: 24.11.2017
 # Last Modified By  : Kaushik S Kalmady
 
 
-from flask import Flask, render_template, flash, redirect, url_for, session, request, logging, jsonify
+import json
 import random
 import sys
-import json
-from flask_mysqldb import MySQL
-from passlib.hash import sha256_crypt
-from pprint import pprint
 from collections import Counter
-
-from forms import RegisterForm, PostForm
+from pprint import pprint
+from flask import (Flask, flash, jsonify, logging, redirect, render_template,
+                   request, session, url_for)
+from flask_mysqldb import MySQL
+from forms import PostForm, RegisterForm
+from passlib.hash import sha256_crypt
 from posts import extract_article
 from utils import parseme
 

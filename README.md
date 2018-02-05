@@ -45,7 +45,11 @@ The idea is inspired from this
 
 `$ git clone git@github.com:kaushiksk/read-it-later.git && cd read-it-later`
 
-`$ pip install -r requirements.txt`
+newspaper requires nltk==2.0.5. See [here](https://stackoverflow.com/questions/46977498/urllib2-httperror-http-error-403-ssl-is-required-when-installing-nltk-2-0-5) for instructions on how to install. 
+Make sure you have mysql, [mysql-dev](https://stackoverflow.com/questions/14604228/mysql-h-file-cant-be-found#14604638), [libxmldev](https://stackoverflow.com/questions/15759150/src-lxml-etree-defs-h931-fatal-error-libxml-xmlversion-h-no-such-file-or-di#15761014) installed. 
+`$ pip install -r requirements.txt --user`
+
+Note that you will need to have gcc installed.
 
 Now run all the scripts in the `db/` folder.
 

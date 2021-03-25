@@ -1,4 +1,4 @@
-Flask==0.12
+Flask==1.0
 flask_mysqldb==0.2.0
 newspaper==0.1.0.7
 passlib==1.7.1
